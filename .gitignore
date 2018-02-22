@@ -297,3 +297,9 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+__vm/Upload.vmps.xml
+ __vm/*
+*.xml
+__vm/.MatrixClockFinal.vsarduino.h
+__vm/.MatrixClockFinal.vsarduino.h
+__vm/.MatrixClockFinal.vsarduino.h
