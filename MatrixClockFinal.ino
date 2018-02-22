@@ -12,13 +12,7 @@
 #include <DS3231.h>
 #include <Arduino.h>
 #include <EEPROM.h>
-
-
-
-
-
-
-
+#include <WString.h>
 
 
 Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(8, 8, 3, 1, MATRIX_PIN,
@@ -38,6 +32,27 @@ byte mode = 0;
 byte setAddress = 0x02; //Address of the set flag in the EEPROM
 int x = matrix.width();
 
+template<typename T> scrollTextOnMatrix(T text) //scroll text on the matrix from right to left. See Adafruit Print function for all possible types of arguments
+{
+	matrix.fillScreen(0);
+	matrix.setCursor(x, 0);
+	matrix.print(text);
+	if (--x < -70) {
+		x = matrix.width();
+	}
+	matrix.show();
+	delay(100);
+}
+
+template <typename T> showTextOnMatrix(T text, int cursorX = 0) //show text on matrix without scrolling, starting at cursorX position (default 0)
+{
+	matrix.fillScreen(0);
+	matrix.setCursor(cursorX, 0);
+	matrix.print(text);
+	matrix.show();
+	delay(100);
+}
+
 
 
 void setup() {
@@ -45,7 +60,7 @@ void setup() {
 	matrix.begin();
 	matrix.setTextWrap(false);
 	matrix.setBrightness(10);
-	matrix.setTextColor(GREEN);
+	matrix.setTextColor(BLUE);
 
 	rtc.begin();
 
@@ -68,31 +83,20 @@ void loop() {
 
 	switch (mode)
 	{
+	
 	case 0:
 		Serial.println("in mode 0 - 24hr clock");
-		
-		matrix.fillScreen(0);
-		matrix.setCursor(x, 0);
-		matrix.print(rtc.getTimeStr());
-		if (--x < -50) {
-			x = matrix.width();
-		}
-		matrix.show();
-		delay(100);
+		scrollTextOnMatrix(rtc.getTimeStr());
 		break;
+
 	case 1:
 		Serial.println("in mode 1 - date");
-		matrix.fillScreen(0);
-		matrix.setCursor(x, 0);
-		matrix.print(rtc.getDateStr());
-		if (--x < -50) {
-			x = matrix.width();
-		}
-		matrix.show();
-		delay(100);
-
+		scrollTextOnMatrix(rtc.getDateStr());
 		break;
+
 	case 2:
+		Serial.println("In mode 2, Temperature");
+		showTextOnMatrix(rtc.getTemp());
 		break;
 	case 3:
 		break;
