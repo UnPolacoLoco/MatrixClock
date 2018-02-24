@@ -32,11 +32,16 @@ const int BLUE = matrix.Color(0, 0, 255);
 
 volatile byte mode = 0;
 byte setAddress = 0x02; //Address of the set flag in the EEPROM
+
 int x = matrix.width();
 
 String temp;
 String date;
 String time;
+
+byte hour;
+byte minute;
+byte second;
 
 void changeMode()
 {
@@ -49,7 +54,8 @@ template<typename T> scrollTextOnMatrix(T text, int textLenght = 0) //scroll tex
 	matrix.fillScreen(0);
 	matrix.setCursor(x, 7);
 	matrix.print(text);
-	if (--x < -textLenght*6) {
+	if (--x < -textLenght*6) //the magic number (6) controls how many columns the text will scroll for. The longer the text, the more columns scrolled
+	{
 		x = matrix.width();
 	}
 	matrix.show();
@@ -65,7 +71,7 @@ template <typename T> showTextOnMatrix(T text, int textLenght = matrix.width()) 
 	matrix.setCursor(Cursor, 7);
 	matrix.print(text);
 	matrix.show();
-	delay(100);
+	delay(75);
 }
 
 
@@ -108,8 +114,32 @@ void loop() {
 	case 0:
 		Serial.println("in mode 0 - 24hr clock");
 
-		time = rtc.getTimeStr();
-		scrollTextOnMatrix(time, time.length());
+		//time = rtc.getTimeStr();
+
+		hour = rtc.getTime().hour;
+		minute = rtc.getTime().min;
+		second = rtc.getTime().sec;
+
+
+		switch (second % 2)
+		{
+		
+		case 0:
+			time = hour;
+			time += " ";
+			time += minute;			
+			showTextOnMatrix(time, time.length());
+			break;
+		
+		case 1:
+			time = hour;
+			time += ":";
+			time += minute;
+			showTextOnMatrix(time, time.length());
+			break;
+		}
+
+		//scrollTextOnMatrix(time, time.length());
 
 		break;
 
