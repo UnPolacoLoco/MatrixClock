@@ -10,8 +10,8 @@
 #include <WString.h>
 
 #define MATRIX_PIN 2
-#define JOYSTICK_BTTN 13
-#define NUM_OF_MODES 5
+
+#define NUM_OF_MODES 4
 #define OUT
 
 #define SCL A5
@@ -19,7 +19,7 @@
 
 #define JOYSTICK_X A1
 #define JOYSTICK_Y A2
-
+#define JOYSTICK_BTTN 13
 
 Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(8, 8, 3, 1, MATRIX_PIN,
 	NEO_TILE_TOP + NEO_TILE_LEFT + NEO_TILE_ROWS + NEO_TILE_PROGRESSIVE +
@@ -41,23 +41,24 @@ byte setAddress = 0x02; //Address of the set flag in the EEPROM
 
 int x = matrix.width();
 
+//strings needed to work with the Real Time Clock
 String temp;
 String date;
 String time;
 
-byte counter = 0;
-
+byte modeCounter = 0;
 void changeMode()
 {
 	if (digitalRead(JOYSTICK_BTTN) != 1)
 	{
 		delay(200);
-		counter++;
+		modeCounter++;
 
 	}
 }
 
-template<typename T> scrollTextOnMatrix(T text, int textLenght = 0) //scroll text on the matrix from right to left. See Adafruit Print function for all possible types of arguments
+//scroll text on the matrix from right to left. See Adafruit Print function for all possible types of arguments
+template<typename T> scrollTextOnMatrix(T text, int textLenght = 0) 
 {
 	matrix.fillScreen(0);
 	matrix.setCursor(x, 7);
@@ -70,9 +71,9 @@ template<typename T> scrollTextOnMatrix(T text, int textLenght = 0) //scroll tex
 	delay(100);
 }
 
-template <typename T> showTextOnMatrix(T text, int textLenght = matrix.width()) //show text on matrix without scrolling, cursor position can be manipulate with the lenght of 'text'. You have to know/calculate text lenght. defaults to matrix.width(), which will give cursor starting position at 0
+//show text on matrix without scrolling, cursor position can be manipulate with the lenght of 'text'. You have to know/calculate text lenght. defaults to matrix.width(), which will give cursor starting position at 0
+template <typename T> showTextOnMatrix(T text, int textLenght = matrix.width()) 
 {
-	
 	int Cursor = matrix.width() / (textLenght + 1);
 	matrix.fillScreen(0);
 	matrix.setCursor(Cursor, 7);
@@ -103,10 +104,7 @@ void setup() {
 	}
 
 	pinMode(MATRIX_PIN, OUTPUT); //Data pin Arduino -> Matrix
-	pinMode(JOYSTICK_BTTN, INPUT_PULLUP); //Joystick button. 
-
-	
-	//attachInterrupt(digitalPinToInterrupt(JOYSTICK_BTTN), changeMode, RISING);
+	pinMode(JOYSTICK_BTTN, INPUT_PULLUP); //Joystick button, active low. 
 	
 	Serial.begin(115200);
 }
@@ -115,8 +113,7 @@ void loop() {
 
 	changeMode();
 
-
-	switch (counter % NUM_OF_MODES)
+	switch (modeCounter % NUM_OF_MODES)
 	{
 	
 	case 0:
@@ -165,29 +162,32 @@ void loop() {
 
 		break;
 
+
 	case 3:
-		Serial.println("in mode 3, Joystick TEST");
+		Serial.println("in mode 3, relative joystick control test");
 
 		matrix.fillScreen(0);
-		matrix.drawPixel(map(joystick.GetX(), 0, 1000, 23, 0), map(joystick.GetY(), 0, 1000, 0, 7), RED);
+
+		byte previousX = joystick.GetCurrentX();
+		byte previousY = joystick.GetCurrentY();
+
+		
+
+		matrix.drawPixel(joystick.SetRelativeX(), joystick.SetRelativeY(), GREEN);
 		matrix.show();
 
-		delay(1);
-		break;
+		if (previousX != joystick.GetCurrentX() || previousY != joystick.GetCurrentY())
+		{
+			delay(10);
+			//matrix.drawPixel(previousX, previousY, BLUE);
+			matrix.drawLine(previousX, previousY, previousX + (-joystick.GetRelativeX() * 2), previousY + (-joystick.GetRelativeY() * 2), RED);
 
-	case 4:
-		Serial.println("in mode 4, relative joystick control test");
-
-
-		matrix.fillScreen(0);
-		matrix.drawPixel(joystick.SetRelativeX(), joystick.SetRelativeY(), GREEN);
+		}
 		matrix.show();
 		delay(10);
 
 		break;
 		
-
-
 	}
 
 }

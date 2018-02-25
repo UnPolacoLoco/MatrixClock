@@ -21,20 +21,32 @@ class Joystick
 {
 
 public:
-	Joystick(byte analogX, byte analogY);
+	Joystick(int8_t analogX, int8_t analogY);
 
-	int GetX();
-	int GetY();
+	//get current analog readings from Arduino analog ports
+	int16_t GetAnalogX();
+	int16_t GetAnalogY();
 
-	byte SetRelativeX();
-	byte SetRelativeY();
+	//Gets currentX and Y positions (stored in the private variables)
+	int8_t GetCurrentX();
+	int8_t GetCurrentY();
+
+	//sets the private variables currentX and currentY based on relative movement of the joystick
+	int8_t SetRelativeX();
+	int8_t SetRelativeY();
+
+	//gets relative movement of the joystick on both axis, returns 1, -1 or 0
+	int8_t GetRelativeX();
+	int8_t GetRelativeY();
+
+
 
 private:
-	byte analogPortX; //Analog port for X-axis
-	byte analogPortY; //Analog port for Y-axis
+	int8_t analogPortX; //Analog port for X-axis
+	int8_t analogPortY; //Analog port for Y-axis
 
-	byte currentX = 0;
-	byte currentY = 0;
+	int8_t currentX = 0;
+	int8_t currentY = 0;
 
 };
 
