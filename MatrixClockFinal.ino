@@ -1,11 +1,4 @@
 
-#define MATRIX_PIN 2
-#define JOYSTICK_BTTN 3
-#define SCL A5
-#define SDA A4
-
-#define NUM_OF_MODES 3
-
 #include <Adafruit_GFX.h>
 #include <Adafruit_NeoMatrix.h>
 #include <Adafruit_NeoPixel.h>
@@ -15,6 +8,20 @@
 #include <Fonts\TomThumb.h>
 #include <WString.h>
 
+#define MATRIX_PIN 2
+#define JOYSTICK_BTTN 3
+#define NUM_OF_MODES 4
+
+#define SCL A5
+#define SDA A4
+
+#define JOYSTICK_X A1
+#define JOYSTICK_Y A2
+
+
+
+
+
 
 Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(8, 8, 3, 1, MATRIX_PIN,
 	NEO_TILE_TOP + NEO_TILE_LEFT + NEO_TILE_ROWS + NEO_TILE_PROGRESSIVE +
@@ -22,8 +29,6 @@ Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(8, 8, 3, 1, MATRIX_PIN,
 	NEO_GRB + NEO_KHZ800);
 
 DS3231 rtc(SDA, SCL);
-
-
 
 
 const int RED = matrix.Color(255, 0, 0);
@@ -43,6 +48,9 @@ byte hour;
 byte minute;
 byte second;
 
+int analogX;
+int analogY;
+
 void changeMode()
 {
 	mode++;
@@ -50,7 +58,6 @@ void changeMode()
 
 template<typename T> scrollTextOnMatrix(T text, int textLenght = 0) //scroll text on the matrix from right to left. See Adafruit Print function for all possible types of arguments
 {
-	Serial.println(textLenght);
 	matrix.fillScreen(0);
 	matrix.setCursor(x, 7);
 	matrix.print(text);
@@ -71,7 +78,7 @@ template <typename T> showTextOnMatrix(T text, int textLenght = matrix.width()) 
 	matrix.setCursor(Cursor, 7);
 	matrix.print(text);
 	matrix.show();
-	delay(75);
+	delay(50);
 }
 
 
@@ -114,32 +121,29 @@ void loop() {
 	case 0:
 		Serial.println("in mode 0 - 24hr clock");
 
-		//time = rtc.getTimeStr();
-
-		hour = rtc.getTime().hour;
-		minute = rtc.getTime().min;
-		second = rtc.getTime().sec;
-
-
-		switch (second % 2)
+		switch (rtc.getTime().sec % 2)
 		{
 		
 		case 0:
-			time = hour;
+			time = rtc.getTime().hour;;
 			time += " ";
-			time += minute;			
+			if (rtc.getTime().min < 10)
+				time += "0";
+		
+			time += rtc.getTime().min;
 			showTextOnMatrix(time, time.length());
 			break;
 		
 		case 1:
-			time = hour;
+			time = rtc.getTime().hour;
 			time += ":";
-			time += minute;
+			if (rtc.getTime().min < 10)
+				time += "0";
+			time += rtc.getTime().min;
 			showTextOnMatrix(time, time.length());
 			break;
 		}
 
-		//scrollTextOnMatrix(time, time.length());
 
 		break;
 
@@ -159,6 +163,20 @@ void loop() {
 		showTextOnMatrix(temp, temp.length());
 
 		break;
+
+	case 3:
+		Serial.println("in mode 3, Jotstick TEST");
+
+		analogX = analogRead(JOYSTICK_X);
+		analogY = analogRead(JOYSTICK_Y);
+
+		matrix.fillScreen(0);
+		matrix.drawPixel(map(analogX, 0, 1000, 23, 0), map(analogY, 0, 1000, 0, 7), RED);
+		matrix.show();
+
+		delay(1);
+		break;
+
 
 	}
 
