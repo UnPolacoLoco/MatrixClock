@@ -1,4 +1,5 @@
 
+#include "Joystick.h"
 #include <Adafruit_GFX.h>
 #include <Adafruit_NeoMatrix.h>
 #include <Adafruit_NeoPixel.h>
@@ -15,8 +16,7 @@
 #define SCL A5
 #define SDA A4
 
-#define JOYSTICK_X A1
-#define JOYSTICK_Y A2
+
 
 
 
@@ -29,6 +29,7 @@ Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(8, 8, 3, 1, MATRIX_PIN,
 	NEO_GRB + NEO_KHZ800);
 
 DS3231 rtc(SDA, SCL);
+Joystick joystick;
 
 
 const int RED = matrix.Color(255, 0, 0);
@@ -43,13 +44,6 @@ int x = matrix.width();
 String temp;
 String date;
 String time;
-
-byte hour;
-byte minute;
-byte second;
-
-int analogX;
-int analogY;
 
 void changeMode()
 {
@@ -167,11 +161,8 @@ void loop() {
 	case 3:
 		Serial.println("in mode 3, Jotstick TEST");
 
-		analogX = analogRead(JOYSTICK_X);
-		analogY = analogRead(JOYSTICK_Y);
-
 		matrix.fillScreen(0);
-		matrix.drawPixel(map(analogX, 0, 1000, 23, 0), map(analogY, 0, 1000, 0, 7), RED);
+		matrix.drawPixel(map(joystick.GetX(), 0, 1000, 23, 0), map(joystick.GetY(), 0, 1000, 0, 7), RED);
 		matrix.show();
 
 		delay(1);
