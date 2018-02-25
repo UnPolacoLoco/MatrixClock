@@ -197,10 +197,10 @@ void loop() {
 		Serial.println("in mode 4: change color");
 
 		bool isEditing = true;
-		int8_t letter = 0;
-		int8_t newBlue = 255;
-		int8_t newRed = 255;
-		int8_t newGreen = 0;
+		uint8_t letter = 0;
+		uint8_t newBlue = 255;
+		uint8_t newRed = 255;
+		uint8_t newGreen = 0;
 
 		int newColor;
 
@@ -208,37 +208,41 @@ void loop() {
 		{
 			letter += joystick.GetRelativeX();
 			showTextOnMatrix("R G B", 5);
-			delay(50);
+			delay(25);
 
 			switch (letter % 3)
 			{
 				
 			case 0: //editing RED
 				Serial.println("editing RED");
-				Serial.println(joystick.GetRelativeY());
-				newRed += joystick.GetRelativeY();
+				
+				newRed += joystick.GetRelativeY() * -25;
+				Serial.println(newRed);
 				newColor = matrix.Color(newRed, newGreen, newBlue);
 				matrix.setTextColor(newColor);
 				showTextOnMatrix("   G B", 5);
-				delay(50);
+				delay(25);
 				break;
 			case 1: //editing GREEN
 				Serial.println("editing GREEN");
-				Serial.println(joystick.GetRelativeY());
-				newGreen += joystick.GetRelativeY();
+				
+				newGreen += joystick.GetRelativeY() * -25;
+				Serial.println(newGreen);
 				newColor = matrix.Color(newRed, newGreen, newBlue);
+
 				matrix.setTextColor(newColor);
 				showTextOnMatrix("R    B", 5);
-				delay(50);
+				delay(25);
 				break;
 			case 2: //editing BLUE
 				Serial.println("editing BLUE");
-				Serial.println(joystick.GetRelativeY());
-				newBlue += joystick.GetRelativeY();
+				
+				newBlue += joystick.GetRelativeY() * -25;
+				Serial.println(newBlue);
 				newColor = matrix.Color(newRed, newGreen, newBlue);
 				matrix.setTextColor(newColor);
 				showTextOnMatrix("R G   ", 5);
-				delay(50);
+				delay(25);
 				break;
 			default:
 				break;
