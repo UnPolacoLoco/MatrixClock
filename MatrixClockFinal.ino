@@ -11,7 +11,7 @@
 
 #define MATRIX_PIN 2
 
-#define NUM_OF_MODES 4
+#define NUM_OF_MODES 5
 #define OUT
 
 #define SCL A5
@@ -108,10 +108,15 @@ void setup() {
 	
 	Serial.begin(115200);
 }
+int8_t previousX;
+int8_t previousY;
+
 
 void loop() {
 
 	changeMode();
+	
+
 
 	switch (modeCounter % NUM_OF_MODES)
 	{
@@ -168,8 +173,8 @@ void loop() {
 
 		matrix.fillScreen(0);
 
-		byte previousX = joystick.GetCurrentX();
-		byte previousY = joystick.GetCurrentY();
+		previousX = joystick.GetCurrentX();
+		previousY = joystick.GetCurrentY();
 
 		
 
@@ -179,7 +184,6 @@ void loop() {
 		if (previousX != joystick.GetCurrentX() || previousY != joystick.GetCurrentY())
 		{
 			delay(10);
-			//matrix.drawPixel(previousX, previousY, BLUE);
 			matrix.drawLine(previousX, previousY, previousX + (-joystick.GetRelativeX() * 2), previousY + (-joystick.GetRelativeY() * 2), RED);
 
 		}
@@ -187,6 +191,71 @@ void loop() {
 		delay(10);
 
 		break;
+
+	case 4:
+
+		Serial.println("in mode 4: change color");
+
+		bool isEditing = true;
+		int8_t letter = 0;
+		int8_t newBlue = 255;
+		int8_t newRed = 255;
+		int8_t newGreen = 0;
+
+		int newColor;
+
+		while (isEditing)
+		{
+			letter += joystick.GetRelativeX();
+			showTextOnMatrix("R G B", 5);
+			delay(50);
+
+			switch (letter % 3)
+			{
+				
+			case 0: //editing RED
+				Serial.println("editing RED");
+				Serial.println(joystick.GetRelativeY());
+				newRed += joystick.GetRelativeY();
+				newColor = matrix.Color(newRed, newGreen, newBlue);
+				matrix.setTextColor(newColor);
+				showTextOnMatrix("   G B", 5);
+				delay(50);
+				break;
+			case 1: //editing GREEN
+				Serial.println("editing GREEN");
+				Serial.println(joystick.GetRelativeY());
+				newGreen += joystick.GetRelativeY();
+				newColor = matrix.Color(newRed, newGreen, newBlue);
+				matrix.setTextColor(newColor);
+				showTextOnMatrix("R    B", 5);
+				delay(50);
+				break;
+			case 2: //editing BLUE
+				Serial.println("editing BLUE");
+				Serial.println(joystick.GetRelativeY());
+				newBlue += joystick.GetRelativeY();
+				newColor = matrix.Color(newRed, newGreen, newBlue);
+				matrix.setTextColor(newColor);
+				showTextOnMatrix("R G   ", 5);
+				delay(50);
+				break;
+			default:
+				break;
+			}
+
+			if (digitalRead(JOYSTICK_BTTN) != 1)
+			{
+				delay(100);
+				isEditing = false;
+				modeCounter++;
+
+			}
+		}
+
+
+		break;
+
 		
 	}
 
