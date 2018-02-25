@@ -10,7 +10,7 @@
 #include <WString.h>
 
 #define MATRIX_PIN 2
-#define JOYSTICK_BTTN 3
+#define JOYSTICK_BTTN 13
 #define NUM_OF_MODES 5
 #define OUT
 
@@ -28,7 +28,8 @@ Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(8, 8, 3, 1, MATRIX_PIN,
 
 
 DS3231 rtc(SDA, SCL);
-Joystick joystick(JOYSTICK_X, JOYSTICK_Y);
+Joystick joystick = Joystick(JOYSTICK_X, JOYSTICK_Y);
+
 
 
 const int RED = matrix.Color(255, 0, 0);
@@ -47,9 +48,16 @@ String time;
 byte stickX = 0;
 byte stickY = 0;
 
+byte counter = 0;
+
 void changeMode()
 {
-	mode++;
+	if (digitalRead(JOYSTICK_BTTN) != 1)
+	{
+		delay(250);
+		counter++;
+
+	}
 }
 
 template<typename T> scrollTextOnMatrix(T text, int textLenght = 0) //scroll text on the matrix from right to left. See Adafruit Print function for all possible types of arguments
@@ -101,16 +109,17 @@ void setup() {
 	pinMode(JOYSTICK_BTTN, INPUT_PULLUP); //Joystick button. 
 
 	
-	attachInterrupt(digitalPinToInterrupt(JOYSTICK_BTTN), changeMode, RISING);
+	//attachInterrupt(digitalPinToInterrupt(JOYSTICK_BTTN), changeMode, RISING);
 	
 	Serial.begin(115200);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+
+	changeMode();
 
 
-	switch (mode % NUM_OF_MODES)
+	switch (counter % NUM_OF_MODES)
 	{
 	
 	case 0:

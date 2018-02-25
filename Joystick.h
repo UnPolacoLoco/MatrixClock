@@ -3,7 +3,8 @@
 #ifndef _JOYSTICK_h
 #define _JOYSTICK_h
 
-
+#define UPPER_DEADZONE 650
+#define LOWER_DEADZONE 250
 
 #if defined(ARDUINO) && ARDUINO >= 100
 	#include "arduino.h"
@@ -24,8 +25,11 @@ public:
 	byte SetRelativeY(byte& currentY);
 
 private:
-	byte joystickX; //Analog port for X-axis
-	byte joystickY; //Analog port for Y-axis
+	byte analogPortX; //Analog port for X-axis
+	byte analogPortY; //Analog port for Y-axis
+
+	byte currentX = 0;
+	byte currentY = 0;
 
 };
 
