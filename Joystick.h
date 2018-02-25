@@ -18,6 +18,9 @@ public:
 	int GetX();
 	int GetY();
 
+	byte GetRelativeX(byte currentX);
+	byte GetRelativeY();
+
 };
 
 #endif

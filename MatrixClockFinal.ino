@@ -11,7 +11,7 @@
 
 #define MATRIX_PIN 2
 #define JOYSTICK_BTTN 3
-#define NUM_OF_MODES 4
+#define NUM_OF_MODES 5
 
 #define SCL A5
 #define SDA A4
@@ -44,6 +44,9 @@ int x = matrix.width();
 String temp;
 String date;
 String time;
+
+byte stickX = 0;
+byte stickY = 0;
 
 void changeMode()
 {
@@ -79,12 +82,15 @@ template <typename T> showTextOnMatrix(T text, int textLenght = matrix.width()) 
 
 void setup() {
   // put your setup code here, to run once:
+
+	//matrix initialization
 	matrix.begin();
 	matrix.setTextWrap(false);
 	matrix.setBrightness(10);
 	matrix.setTextColor(BLUE);
 	matrix.setFont(&TomThumb);
 
+	//real time clock module initialization
 	rtc.begin();
 	if(EEPROM.read(setAddress) != 1)
 	{ 
@@ -93,6 +99,7 @@ void setup() {
 		rtc.setDate(22, 2, 2018);   //Set date to 22nd of Feb, 2018
 		EEPROM.write(setAddress, 1);
 	}
+
 
 	pinMode(MATRIX_PIN, OUTPUT); //Data pin Arduino -> Matrix
 	pinMode(JOYSTICK_BTTN, INPUT_PULLUP); //Joystick button. 
@@ -159,7 +166,7 @@ void loop() {
 		break;
 
 	case 3:
-		Serial.println("in mode 3, Jotstick TEST");
+		Serial.println("in mode 3, Joystick TEST");
 
 		matrix.fillScreen(0);
 		matrix.drawPixel(map(joystick.GetX(), 0, 1000, 23, 0), map(joystick.GetY(), 0, 1000, 0, 7), RED);
@@ -167,6 +174,29 @@ void loop() {
 
 		delay(1);
 		break;
+
+	case 4:
+		Serial.println("in mode 4, relative joystick control test");
+
+		/*if (joystick.GetX() > 700 && stickX != 0)
+			stickX--;
+		else if (joystick.GetX() < 300 & stickX != 23)
+			stickX++;*/
+
+		if (joystick.GetY() > 700 && stickY != 7)
+			stickY++;
+		else if (joystick.GetY() < 300 && stickY != 0)
+			stickY--;
+	
+		stickX = joystick.GetRelativeX(stickX);
+
+		matrix.fillScreen(0);
+		matrix.drawPixel(stickX, stickY, GREEN);
+		matrix.show();
+		delay(10);
+
+		break;
+		
 
 
 	}
