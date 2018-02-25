@@ -3,8 +3,7 @@
 #ifndef _JOYSTICK_h
 #define _JOYSTICK_h
 
-#define JOYSTICK_X A1
-#define JOYSTICK_Y A2
+
 
 #if defined(ARDUINO) && ARDUINO >= 100
 	#include "arduino.h"
@@ -14,12 +13,19 @@
 
 class Joystick
 {
+
 public:
+	Joystick(byte analogX, byte analogY);
+
 	int GetX();
 	int GetY();
 
-	byte GetRelativeX(byte currentX);
-	byte GetRelativeY();
+	byte SetRelativeX(byte& currentX);
+	byte SetRelativeY(byte& currentY);
+
+private:
+	byte joystickX; //Analog port for X-axis
+	byte joystickY; //Analog port for Y-axis
 
 };
 

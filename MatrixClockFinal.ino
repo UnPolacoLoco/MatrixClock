@@ -12,15 +12,13 @@
 #define MATRIX_PIN 2
 #define JOYSTICK_BTTN 3
 #define NUM_OF_MODES 5
+#define OUT
 
 #define SCL A5
 #define SDA A4
 
-
-
-
-
-
+#define JOYSTICK_X A1
+#define JOYSTICK_Y A2
 
 
 Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(8, 8, 3, 1, MATRIX_PIN,
@@ -28,8 +26,9 @@ Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(8, 8, 3, 1, MATRIX_PIN,
 	NEO_MATRIX_BOTTOM + NEO_MATRIX_LEFT + NEO_MATRIX_COLUMNS + NEO_MATRIX_PROGRESSIVE,
 	NEO_GRB + NEO_KHZ800);
 
+
 DS3231 rtc(SDA, SCL);
-Joystick joystick;
+Joystick joystick(JOYSTICK_X, JOYSTICK_Y);
 
 
 const int RED = matrix.Color(255, 0, 0);
@@ -69,7 +68,6 @@ template<typename T> scrollTextOnMatrix(T text, int textLenght = 0) //scroll tex
 template <typename T> showTextOnMatrix(T text, int textLenght = matrix.width()) //show text on matrix without scrolling, cursor position can be manipulate with the lenght of 'text'. You have to know/calculate text lenght. defaults to matrix.width(), which will give cursor starting position at 0
 {
 	
-
 	int Cursor = matrix.width() / (textLenght + 1);
 	matrix.fillScreen(0);
 	matrix.setCursor(Cursor, 7);
@@ -81,7 +79,6 @@ template <typename T> showTextOnMatrix(T text, int textLenght = matrix.width()) 
 
 
 void setup() {
-  // put your setup code here, to run once:
 
 	//matrix initialization
 	matrix.begin();
@@ -100,14 +97,11 @@ void setup() {
 		EEPROM.write(setAddress, 1);
 	}
 
-
 	pinMode(MATRIX_PIN, OUTPUT); //Data pin Arduino -> Matrix
 	pinMode(JOYSTICK_BTTN, INPUT_PULLUP); //Joystick button. 
 
 	
 	attachInterrupt(digitalPinToInterrupt(JOYSTICK_BTTN), changeMode, RISING);
-
-	
 	
 	Serial.begin(115200);
 }
@@ -178,20 +172,9 @@ void loop() {
 	case 4:
 		Serial.println("in mode 4, relative joystick control test");
 
-		/*if (joystick.GetX() > 700 && stickX != 0)
-			stickX--;
-		else if (joystick.GetX() < 300 & stickX != 23)
-			stickX++;*/
-
-		if (joystick.GetY() > 700 && stickY != 7)
-			stickY++;
-		else if (joystick.GetY() < 300 && stickY != 0)
-			stickY--;
-	
-		stickX = joystick.GetRelativeX(stickX);
 
 		matrix.fillScreen(0);
-		matrix.drawPixel(stickX, stickY, GREEN);
+		matrix.drawPixel(joystick.SetRelativeX(OUT stickX), joystick.SetRelativeY(OUT stickY), GREEN);
 		matrix.show();
 		delay(10);
 
