@@ -6,6 +6,11 @@
 #define UPPER_DEADZONE 650
 #define LOWER_DEADZONE 250
 
+#define BOTTOM_X 0
+#define BOTTOM_Y 0
+#define UPPER_X 23
+#define UPPER_Y 7
+
 #if defined(ARDUINO) && ARDUINO >= 100
 	#include "arduino.h"
 #else
@@ -21,8 +26,8 @@ public:
 	int GetX();
 	int GetY();
 
-	byte SetRelativeX(byte& currentX);
-	byte SetRelativeY(byte& currentY);
+	byte SetRelativeX();
+	byte SetRelativeY();
 
 private:
 	byte analogPortX; //Analog port for X-axis

@@ -22,11 +22,11 @@ int Joystick::GetY()
 }
 
 //sets new X position based on joystick movement relative to the currentX position reference
-byte Joystick::SetRelativeX(byte& currentX)
+byte Joystick::SetRelativeX()
 {
-	if (GetX() > UPPER_DEADZONE && currentX != 0)
+	if (GetX() > UPPER_DEADZONE && currentX != BOTTOM_X)
 		return currentX--;
-	else if (GetX() < LOWER_DEADZONE & currentX != 23)
+	else if (GetX() < LOWER_DEADZONE & currentX != UPPER_X)
 		return currentX++;
 	else
 		return currentX;
@@ -34,11 +34,11 @@ byte Joystick::SetRelativeX(byte& currentX)
 }
 
 //sets new Y position based on joystick movement relative to the currentX position reference
-byte Joystick::SetRelativeY(byte& currentY)
+byte Joystick::SetRelativeY()
 {
-	if (GetY() > UPPER_DEADZONE && currentY != 7)
+	if (GetY() > UPPER_DEADZONE && currentY != UPPER_Y)
 		return currentY++;
-	else if (GetY() < LOWER_DEADZONE && currentY != 0)
+	else if (GetY() < LOWER_DEADZONE && currentY != BOTTOM_Y)
 		return currentY--;
 	else
 		return currentY;

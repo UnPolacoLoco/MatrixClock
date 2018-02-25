@@ -45,16 +45,13 @@ String temp;
 String date;
 String time;
 
-byte stickX = 0;
-byte stickY = 0;
-
 byte counter = 0;
 
 void changeMode()
 {
 	if (digitalRead(JOYSTICK_BTTN) != 1)
 	{
-		delay(250);
+		delay(200);
 		counter++;
 
 	}
@@ -183,7 +180,7 @@ void loop() {
 
 
 		matrix.fillScreen(0);
-		matrix.drawPixel(joystick.SetRelativeX(OUT stickX), joystick.SetRelativeY(OUT stickY), GREEN);
+		matrix.drawPixel(joystick.SetRelativeX(), joystick.SetRelativeY(), GREEN);
 		matrix.show();
 		delay(10);
 
