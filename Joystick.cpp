@@ -32,20 +32,20 @@ int8_t Joystick::GetCurrentY()
 }
 
 //sets new X position based on joystick movement relative to the currentX position reference
-int8_t Joystick::SetRelativeX()
+int8_t Joystick::GetRelativeX()
 {
-	if (currentX + GetRelativeX() >= BOTTOM_X && currentX + GetRelativeX() <= UPPER_X)
-	return currentX += GetRelativeX();
+	if (currentX + GetMovementX() >= BOTTOM_X && currentX + GetMovementX() <= UPPER_X)
+	return currentX += GetMovementX();
 }
 
 //sets new Y position based on joystick movement relative to the currentX position reference
-int8_t Joystick::SetRelativeY()
+int8_t Joystick::GetRelativeY()
 {
-	if (currentY + GetRelativeY() >= BOTTOM_Y && currentY + GetRelativeY() <= UPPER_Y)
-	return currentY += GetRelativeY();
+	if (currentY + GetMovementY() >= BOTTOM_Y && currentY + GetMovementY() <= UPPER_Y)
+	return currentY += GetMovementY();
 }
 
-int8_t Joystick::GetRelativeX()
+int8_t Joystick::GetMovementX()
 {
 	if (GetAnalogX() > UPPER_DEADZONE)
 		return -1;
@@ -55,7 +55,7 @@ int8_t Joystick::GetRelativeX()
 		return 0;
 }
 
-int8_t Joystick::GetRelativeY()
+int8_t Joystick::GetMovementY()
 {
 	if (GetAnalogY() > UPPER_DEADZONE)
 		return 1;

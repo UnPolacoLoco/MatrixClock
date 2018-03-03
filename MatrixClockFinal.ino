@@ -32,9 +32,9 @@ Joystick joystick = Joystick(JOYSTICK_X, JOYSTICK_Y);
 
 
 
-const int RED = matrix.Color(255, 0, 0);
-const int GREEN = matrix.Color(0, 255, 0);
-const int BLUE = matrix.Color(0, 0, 255);
+int RED;
+int GREEN;
+int BLUE;
 
 volatile byte mode = 0;
 byte setAddress = 0x02; //Address of the set flag in the EEPROM
@@ -45,6 +45,7 @@ int x = matrix.width();
 String temp;
 String date;
 String time;
+
 
 byte modeCounter = 0;
 void changeMode()
@@ -90,7 +91,7 @@ void setup() {
 	matrix.begin();
 	matrix.setTextWrap(false);
 	matrix.setBrightness(10);
-	matrix.setTextColor(BLUE);
+	matrix.setTextColor(matrix.Color(255, 0, 0));
 	matrix.setFont(&TomThumb);
 
 	//real time clock module initialization
@@ -108,8 +109,6 @@ void setup() {
 	
 	Serial.begin(115200);
 }
-int8_t previousX;
-int8_t previousY;
 
 
 void loop() {
@@ -173,20 +172,20 @@ void loop() {
 
 		matrix.fillScreen(0);
 
-		previousX = joystick.GetCurrentX();
-		previousY = joystick.GetCurrentY();
+		joystick.previousX = joystick.GetCurrentX();
+		joystick.previousY = joystick.GetCurrentY();
 
-		
 
-		matrix.drawPixel(joystick.SetRelativeX(), joystick.SetRelativeY(), GREEN);
+		matrix.drawPixel(joystick.GetRelativeX(), joystick.GetRelativeY(), matrix.Color(0,255,0));
 		matrix.show();
 
-		if (previousX != joystick.GetCurrentX() || previousY != joystick.GetCurrentY())
+		if (joystick.previousX != joystick.GetCurrentX() || joystick.previousY != joystick.GetCurrentY())
 		{
 			delay(10);
-			matrix.drawLine(previousX, previousY, previousX + (-joystick.GetRelativeX() * 2), previousY + (-joystick.GetRelativeY() * 2), RED);
+			matrix.drawLine(joystick.previousX, joystick.previousY, joystick.previousX + (-joystick.GetMovementX() * 2), joystick.previousY + (-joystick.GetMovementY() * 2), matrix.Color(0,0,255));
 
 		}
+
 		matrix.show();
 		delay(10);
 
@@ -198,15 +197,13 @@ void loop() {
 
 		bool isEditing = true;
 		uint8_t letter = 0;
-		uint8_t newBlue = 255;
-		uint8_t newRed = 255;
-		uint8_t newGreen = 0;
+
 
 		int newColor;
 
 		while (isEditing)
 		{
-			letter += joystick.GetRelativeX();
+			letter += joystick.GetMovementX();
 			showTextOnMatrix("R G B", 5);
 			delay(25);
 
@@ -216,34 +213,37 @@ void loop() {
 			case 0: //editing RED
 				Serial.println("editing RED");
 				
-				newRed += joystick.GetRelativeY() * -25;
-				Serial.println(newRed);
-				newColor = matrix.Color(newRed, newGreen, newBlue);
+				RED += joystick.GetMovementY() * -25;
+				Serial.println(RED);
+				newColor = matrix.Color(RED, GREEN, BLUE);
 				matrix.setTextColor(newColor);
 				showTextOnMatrix("   G B", 5);
 				delay(25);
 				break;
+
 			case 1: //editing GREEN
 				Serial.println("editing GREEN");
 				
-				newGreen += joystick.GetRelativeY() * -25;
-				Serial.println(newGreen);
-				newColor = matrix.Color(newRed, newGreen, newBlue);
+				GREEN += joystick.GetMovementY() * -25;
+				Serial.println(GREEN);
+				newColor = matrix.Color(RED, GREEN, BLUE);
 
 				matrix.setTextColor(newColor);
 				showTextOnMatrix("R    B", 5);
 				delay(25);
 				break;
+
 			case 2: //editing BLUE
 				Serial.println("editing BLUE");
 				
-				newBlue += joystick.GetRelativeY() * -25;
-				Serial.println(newBlue);
-				newColor = matrix.Color(newRed, newGreen, newBlue);
+				BLUE += joystick.GetMovementY() * -25;
+				Serial.println(BLUE);
+				newColor = matrix.Color(RED, GREEN, BLUE);
 				matrix.setTextColor(newColor);
 				showTextOnMatrix("R G   ", 5);
 				delay(25);
 				break;
+
 			default:
 				break;
 			}

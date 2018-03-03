@@ -32,12 +32,15 @@ public:
 	int8_t GetCurrentY();
 
 	//sets the private variables currentX and currentY based on relative movement of the joystick
-	int8_t SetRelativeX();
-	int8_t SetRelativeY();
-
-	//gets relative movement of the joystick on both axis, returns 1, -1 or 0
 	int8_t GetRelativeX();
 	int8_t GetRelativeY();
+
+	//gets relative movement of the joystick on both axis, returns 1, -1 or 0
+	int8_t GetMovementX();
+	int8_t GetMovementY();
+
+	int8_t previousX;
+	int8_t previousY;
 
 
 
@@ -47,6 +50,8 @@ private:
 
 	int8_t currentX = 0;
 	int8_t currentY = 0;
+
+
 
 };
 
