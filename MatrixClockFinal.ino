@@ -7,7 +7,6 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 #include <Fonts\TomThumb.h>
-#include <WString.h>
 
 #define MATRIX_PIN 2
 
@@ -160,9 +159,23 @@ void loop() {
 	case 2:
 		Serial.println("In mode 2, Temperature");
 
-		temp = (int)rtc.getTemp();
-		temp += "' C";
-		showTextOnMatrix(temp, temp.length());
+		
+
+		if (joystick.GetMovementX() == 0)
+		{
+			
+			temp = (int)rtc.getTemp();
+			temp += "' C";
+			showTextOnMatrix(temp, temp.length());
+		}
+
+		else
+		{
+			temp = (int)(rtc.getTemp() * 1.8 + 32);
+			temp += "' F";
+			//temp.remove(2, 3);
+			showTextOnMatrix(temp, temp.length());
+		}
 
 		break;
 
