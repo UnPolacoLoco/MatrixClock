@@ -35,7 +35,6 @@ int RED;
 int GREEN;
 int BLUE;
 
-volatile byte mode = 0;
 byte setAddress = 0x02; //Address of the set flag in the EEPROM
 
 int x = matrix.width();
@@ -173,7 +172,6 @@ void loop() {
 		{
 			temp = (int)(rtc.getTemp() * 1.8 + 32);
 			temp += "' F";
-			//temp.remove(2, 3);
 			showTextOnMatrix(temp, temp.length());
 		}
 

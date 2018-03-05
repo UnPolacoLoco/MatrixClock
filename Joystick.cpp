@@ -31,14 +31,14 @@ int8_t Joystick::GetCurrentY()
 	return currentY;
 }
 
-//sets new X position based on joystick movement relative to the currentX position reference
+//gets new X position based on joystick movement relative to the currentX position reference
 int8_t Joystick::GetRelativeX()
 {
 	if (currentX + GetMovementX() >= BOTTOM_X && currentX + GetMovementX() <= UPPER_X)
 	return currentX += GetMovementX();
 }
 
-//sets new Y position based on joystick movement relative to the currentX position reference
+//gets new Y position based on joystick movement relative to the currentX position reference
 int8_t Joystick::GetRelativeY()
 {
 	if (currentY + GetMovementY() >= BOTTOM_Y && currentY + GetMovementY() <= UPPER_Y)
