@@ -7,14 +7,10 @@
 
 void MatrixClock::showDate()
 {
-
-	Serial.println("Printing date");
-
 	date = rtc.getDateStr();
 	int lenght = date.length();
 	
 	scrollText(date);
-
 }
 
 void MatrixClock::showTime()
@@ -159,7 +155,7 @@ void MatrixClock::changeMode()
 
 const uint8_t MatrixClock::getMode()
 {
-	return modeCounter;
+	return modeCounter % NUM_OF_MODES;
 }
 
 void MatrixClock::scrollText(String textToScroll)

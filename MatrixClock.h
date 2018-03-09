@@ -19,6 +19,8 @@
 #define JOYSTICK_Y A2
 #define JOYSTICK_BTTN 13
 
+#define NUM_OF_MODES 5
+
 
 
 
@@ -30,9 +32,11 @@
 #include <EEPROM.h>
 #include "Joystick.h"
 
+
 class MatrixClock
 {
 public:
+
 	void showDate();
 	void showTime();
 	void showTemp();
@@ -47,6 +51,7 @@ public:
 	void changeMode();
 	const uint8_t getMode();
 
+
 private:
 
 	Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(8, 8, 3, 1, MATRIX_PIN,
@@ -56,8 +61,7 @@ private:
 	DS3231 rtc = DS3231(A4, A5);
 	Joystick joystick = Joystick(JOYSTICK_X, JOYSTICK_Y);
 	
-	uint8_t setAddress = 0x02; //Address of the set flag in the EEPROM
-
+	const uint8_t setAddress = 0x02; //Address of the set flag in the EEPROM
 
 	int x = matrix.width(); // needed to scroll text on matrix
 
@@ -67,9 +71,9 @@ private:
 
 	uint8_t modeCounter = 0;
 
-	uint8_t RED = matrix.Color(255, 0, 0);
-	uint8_t GREEN = matrix.Color(0, 255, 0);
-	uint8_t BLUE = matrix.Color(0, 0, 255);
+	uint16_t RED = matrix.Color(255, 0, 0);
+	uint16_t GREEN = matrix.Color(0, 255, 0);
+	uint16_t BLUE = matrix.Color(0, 0, 255);
 
 };
 

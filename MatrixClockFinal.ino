@@ -2,15 +2,7 @@
 #include "MatrixClock.h"
 #include <Arduino.h>
 
-
-#define NUM_OF_MODES 5
-#define OUT
-
-
 MatrixClock clock;
-
-
-
 
 
 void setup() {
@@ -27,16 +19,13 @@ void setup() {
 
 
 void loop() {
-
+	
 	clock.changeMode();
-	
-	//clock.showDate();
-	//clock.showTime();
-	//clock.showTemp();
 
-	switch (clock.getMode() % NUM_OF_MODES)
+
+	switch (clock.getMode())
 	{
-	
+
 	case 0:
 		Serial.println("In mode 0, Time");
 		clock.showTime();
@@ -77,12 +66,12 @@ void loop() {
 		break;*/
 
 	case 4:
-
 		Serial.println("in mode 4: change color");
 		clock.changeTextColor();
 		break;
-
-		
+	default:
+		clock.showText("ERROR");
+		break;
 	}
 
 }
