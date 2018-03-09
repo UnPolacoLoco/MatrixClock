@@ -81,10 +81,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Joystick.h" />
+    <ClInclude Include="MatrixClock.h" />
     <ClInclude Include="__vm\.MatrixClockFinal.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Joystick.cpp" />
+    <ClCompile Include="MatrixClock.cpp" />
   </ItemGroup>
   <PropertyGroup>
     <DebuggerFlavor>VisualMicroDebugger</DebuggerFlavor>

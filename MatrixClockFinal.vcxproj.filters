@@ -24,9 +24,15 @@
     <ClInclude Include="Joystick.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MatrixClock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Joystick.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MatrixClock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

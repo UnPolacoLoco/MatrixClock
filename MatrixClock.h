@@ -58,7 +58,9 @@ private:
 		NEO_TILE_TOP + NEO_TILE_LEFT + NEO_TILE_ROWS + NEO_TILE_PROGRESSIVE +
 		NEO_MATRIX_BOTTOM + NEO_MATRIX_LEFT + NEO_MATRIX_COLUMNS + NEO_MATRIX_PROGRESSIVE,
 		NEO_GRB + NEO_KHZ800);
+
 	DS3231 rtc = DS3231(A4, A5);
+
 	Joystick joystick = Joystick(JOYSTICK_X, JOYSTICK_Y);
 	
 	const uint8_t setAddress = 0x02; //Address of the set flag in the EEPROM
