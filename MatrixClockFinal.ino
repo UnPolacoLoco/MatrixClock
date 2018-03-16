@@ -21,29 +21,31 @@ void setup()
 
 void loop() 
 {
-	
-	clock.changeMode();
+	if (digitalRead(JOYSTICK_BTTN) == 0)
+	{
+		clock.changeMode();
+	}
 
 	switch (clock.getMode())
 	{
 
-	case 0:
+	case MODES::TIME_AND_DATE:
 		Serial.println("In mode 0, Time and Date");
 		
 		clock.showTimeAndDate();
 		break;
 
-	case 1:
+	case MODES::TIME:
 		Serial.println("In mode 1, Just Time");
 		clock.showTime();
 		break;
 
-	case 2:
+	case MODES::DATE:
 		Serial.println("In mode 2, Just Date");
 		clock.showDate();
 		break;
 
-	case 3:
+	case MODES::TEMPERATURE:
 
 		Serial.println("in mode 3, Temperature");
 		clock.showTemp();
@@ -68,13 +70,13 @@ void loop()
 	
 
 
-	case 4:
+	case MODES::CHANGE_COLOR:
 		Serial.println("in mode 4: change color");
 		clock.changeTextColor();
 		break;
-	case 5:
+	case MODES::DEBUG:
 		Serial.println("in mode 5: debug");
-
+		break;
 	default:
 		clock.showText("ERROR");
 		break;

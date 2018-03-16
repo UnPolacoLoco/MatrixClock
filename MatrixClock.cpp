@@ -97,20 +97,25 @@ void MatrixClock::showTemp()
 void MatrixClock::showTimeAndDate()
 {
 	unsigned long currentTime = millis();
+	bool modeChanged = false;
 
-	while ((millis() - currentTime) < 10000) //show the clock for 10000ms (10s)
+	while ((millis() - currentTime) < 10000 && !modeChanged) //show the clock for 10000ms (10s)
 	{
 		showTime();
-		changeMode();
+		modeChanged = joystick.IsPressed();
 	}
 
 	currentTime = millis();
 	x = matrix.width();
 
-	while ((millis() - currentTime) < 16000) //it takes 16000ms (16s) to scroll the entire FullDate()
+	while ((millis() - currentTime) < 16000 && !modeChanged) //it takes 16000ms (16s) to scroll the entire FullDate()
 	{
-		
 		showFullDate();
+		modeChanged = joystick.IsPressed();
+	}
+
+	if (modeChanged)
+	{
 		changeMode();
 	}
 
@@ -203,17 +208,34 @@ void MatrixClock::initialize()
 
 void MatrixClock::changeMode()
 {
-	if(joystick.IsPressed())
-	{
-		delay(200);
-		modeCounter++;
-		
-	}
+	delay(200);
+	modeCounter++;
 }
 
-const uint8_t MatrixClock::getMode()
+const MODES MatrixClock::getMode()
 {
-	return modeCounter % NUM_OF_MODES;
+	switch (modeCounter % NUM_OF_MODES)
+	{
+	case 0:
+		return MODES::TIME_AND_DATE;
+		break;
+	case 1:
+		return MODES::TIME;
+		break;
+	case 2:
+		return MODES::DATE;
+		break;
+	case 3:
+		return MODES::TEMPERATURE;
+		break;
+	case 4:
+		return MODES::CHANGE_COLOR;
+		break;
+	case 5:
+		return MODES::DEBUG;
+		break;
+
+	}
 }
 
 void MatrixClock::scrollText(String textToScroll)

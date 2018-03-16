@@ -35,6 +35,16 @@
 #include <EEPROM.h>
 #include "Joystick.h"
 
+enum MODES
+{
+	TIME_AND_DATE ,
+	TIME,
+	DATE,
+	TEMPERATURE,
+	CHANGE_COLOR,
+	DEBUG,
+
+};
 
 class MatrixClock
 {
@@ -54,7 +64,7 @@ public:
 	void showText(String textToShow);
 
 	void changeMode();
-	const uint8_t getMode();
+	const MODES getMode();
 
 
 private:
