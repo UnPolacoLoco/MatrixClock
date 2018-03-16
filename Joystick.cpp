@@ -4,11 +4,16 @@
 
 #include "Joystick.h"
 
-//byte analogX: Analog port for X-axis || analogY: Analog port for Y-axis
-Joystick::Joystick(int8_t analogX, int8_t analogY)
+Joystick::Joystick(int8_t analogX, int8_t analogY) 
+	: analogPortX(analogX), analogPortY(analogY)
 {
-	analogPortX = analogX;
-	analogPortY = analogY;
+	//constructor for joystick without a dedicated button
+}
+
+Joystick::Joystick(int8_t analogX, int8_t analogY, int8_t joystickButton) 
+	: analogPortX(analogX), analogPortY(analogY), joystickButtonPort(joystickButton)
+{
+	//constructor for joystick with a dedicated button
 }
 
 int16_t Joystick::GetAnalogX()
@@ -63,4 +68,9 @@ int8_t Joystick::GetMovementY()
 		return -1;
 	else
 		return 0;
+}
+
+bool Joystick::IsPressed()
+{
+	return (digitalRead(joystickButtonPort) == 1 ? false : true);
 }

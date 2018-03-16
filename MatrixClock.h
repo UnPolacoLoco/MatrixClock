@@ -9,17 +9,20 @@
 	#include "WProgram.h"
 #endif
 
+//DI pin for Matrix
 #define MATRIX_PIN 2
 
-//required for RTC
+//RTC pins
 #define SCL A5
 #define SDA A4
 
+//Joystick pins
 #define JOYSTICK_X A1
 #define JOYSTICK_Y A2
 #define JOYSTICK_BTTN 13
 
-#define NUM_OF_MODES 5
+//increase when modes increase
+#define NUM_OF_MODES 6
 
 
 
@@ -37,16 +40,18 @@ class MatrixClock
 {
 public:
 
+	void initialize();
+
 	void showDate();
+	void showFullDate();
 	void showTime();
 	void showTemp();
+	void showTimeAndDate();
 
 	void changeTextColor();
 	
 	void scrollText(String textToScroll);
 	void showText(String textToShow);
-
-	void initialize();
 
 	void changeMode();
 	const uint8_t getMode();
@@ -61,7 +66,7 @@ private:
 
 	DS3231 rtc = DS3231(A4, A5);
 
-	Joystick joystick = Joystick(JOYSTICK_X, JOYSTICK_Y);
+	Joystick joystick = Joystick(JOYSTICK_X, JOYSTICK_Y, JOYSTICK_BTTN);
 	
 	const uint8_t setAddress = 0x02; //Address of the set flag in the EEPROM
 
@@ -70,6 +75,7 @@ private:
 	String date;
 	String temp;
 	String time;
+
 
 	uint8_t modeCounter = 0;
 

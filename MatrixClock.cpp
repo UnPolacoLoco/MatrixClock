@@ -8,9 +8,43 @@
 void MatrixClock::showDate()
 {
 	date = rtc.getDateStr();
-	int lenght = date.length();
 	
 	scrollText(date);
+}
+
+void MatrixClock::showFullDate()
+{
+	date = rtc.getDOWStr();
+	date += ", ";
+	
+	date += rtc.getTime().date;
+
+	if (rtc.getTime().date >= 10 && rtc.getTime().date <= 20)
+	{
+		date += "th of ";
+	}
+	else
+	{
+		switch (rtc.getTime().date % 10)
+		{
+		case 1:
+			date += "st of ";
+			break;
+		case 2:
+			date += "nd of ";
+			break;
+		case 3:
+			date += "rd of ";
+			break;
+		default:
+			date += "th of ";
+			break;
+		}
+	}
+		
+	date += rtc.getMonthStr();
+	scrollText(date);
+
 }
 
 void MatrixClock::showTime()
@@ -37,6 +71,8 @@ void MatrixClock::showTime()
 			showText(time);
 			break;
 		}
+
+	
 }
 
 void MatrixClock::showTemp()
@@ -58,12 +94,34 @@ void MatrixClock::showTemp()
 
 }
 
+void MatrixClock::showTimeAndDate()
+{
+	unsigned long currentTime = millis();
+
+	while ((millis() - currentTime) < 10000) //show the clock for 10000ms (10s)
+	{
+		showTime();
+		changeMode();
+	}
+
+	currentTime = millis();
+	x = matrix.width();
+
+	while ((millis() - currentTime) < 16000) //it takes 16000ms (16s) to scroll the entire FullDate()
+	{
+		
+		showFullDate();
+		changeMode();
+	}
+
+}
+
 void MatrixClock::changeTextColor()
 {
 	bool isEditing = true;
 	uint8_t letter = 0;
 
-
+	
 	int newColor;
 
 	while (isEditing)
@@ -145,11 +203,11 @@ void MatrixClock::initialize()
 
 void MatrixClock::changeMode()
 {
-	if(digitalRead(JOYSTICK_BTTN) != 1)
+	if(joystick.IsPressed())
 	{
 		delay(200);
 		modeCounter++;
-
+		
 	}
 }
 
@@ -166,13 +224,13 @@ void MatrixClock::scrollText(String textToScroll)
 	matrix.setCursor(x, 7);
 	matrix.print(textToScroll);
 
-	if (--x < -lenght * 6) //the magic number (6) controls how many columns the text will scroll for. The longer the text, the more columns scrolled
+	if (--x < -lenght * 5) //the magic number (5) controls how many columns the text will scroll for. The longer the text, the more columns scrolled
 	{
 		x = matrix.width();
 	}
 
 	matrix.show();
-	delay(100);
+	delay(150);
 }
 
 void MatrixClock::showText(String textToShow)
