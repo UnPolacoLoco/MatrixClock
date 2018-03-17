@@ -181,67 +181,139 @@ void MatrixClock::drawDisplayBuffer()
 void MatrixClock::changeTextColor()
 {
 	bool isEditing = true;
-	uint8_t letter = 0;
+	uint8_t selectColor = 0;
 
-	uint16_t _RED = RED;
-	uint16_t _GREEN = RED;
-	uint16_t _BLUE = RED;
-
-	uint16_t newColor = _RED;
-
-	while (!joystick.IsPressed())
-	{
-		scrollText("Use up and down on joystick. Press the button when ready", 100);
-	}
-
+	
 	while (isEditing)
 	{
-		letter += joystick.GetMovementX();
+		selectColor += joystick.GetMovementX();
 		delay(50);
 
-		switch (letter % 3)
+		switch (selectColor % 7)
 		{
-
-		case 0: //editing RED
-			Serial.println("editing RED");
-
-			_RED += joystick.GetMovementY() * -25;
-			Serial.println(_RED);
-			newColor = matrix.Color(_RED, _GREEN, _BLUE);
-			matrix.setTextColor(newColor);
+		case 0:
+			delay(50);
+			matrix.setTextColor(RED);
 			showText("RED");
+			break;
+		case 1:
 			delay(50);
+			matrix.setTextColor(GREEN);
+			showText("GRN");
+			break;
+		case 2:
+			delay(50);
+			matrix.setTextColor(BLUE);
+			showText("BLU");
+			break;
+		case 3:
+			delay(50);
+			matrix.setTextColor(WHITE);
+			showText("WHT");
+			break;
+		case 4:
+			delay(50);
+			matrix.setTextColor(YELLOW);
+			showText("YLW");
 			break;
 
-		case 1: //editing GREEN
-			Serial.println("editing GREEN");
-
-			_GREEN += joystick.GetMovementY() * -25;
-			Serial.println(_GREEN);
-			newColor = matrix.Color(_RED, _GREEN, _BLUE);
-
-			matrix.setTextColor(newColor);
-			showText("GREEN");
+		case 5:
 			delay(50);
+			matrix.setTextColor(CYAN);
+			showText("CYNN");
 			break;
 
-		case 2: //editing BLUE
-			Serial.println("editing BLUE");
-
-			_BLUE += joystick.GetMovementY() * -25;
-			Serial.println(_BLUE);
-			newColor = matrix.Color(_RED, _GREEN, _BLUE);
-			matrix.setTextColor(newColor);
-			showText("BLUE");
+		case 6:
 			delay(50);
+			matrix.setTextColor(MAGENTA);
+			showText("MGT");
 			break;
 
+			/*while (!joystick.IsPressed())
+			{
+				scrollText("Use up and down on joystick. Press the button when ready", 100);
+			}
+
+			
+
+			switch (letter % 3)
+			{
+
+			case 0: //editing RED
+				Serial.println("editing RED");
+
+				_RED += joystick.GetMovementY() * -25;
+				Serial.println(_RED);
+				newColor = matrix.Color(_RED, _GREEN, _BLUE);
+				matrix.setTextColor(newColor);
+				showText("RED");
+				delay(50);
+				break;
+
+			case 1: //editing GREEN
+				Serial.println("editing GREEN");
+
+				_GREEN += joystick.GetMovementY() * -25;
+				Serial.println(_GREEN);
+				newColor = matrix.Color(_RED, _GREEN, _BLUE);
+
+				matrix.setTextColor(newColor);
+				showText("GREEN");
+				delay(50);
+				break;
+
+			case 2: //editing BLUE
+				Serial.println("editing BLUE");
+
+				_BLUE += joystick.GetMovementY() * -25;
+				Serial.println(_BLUE);
+				newColor = matrix.Color(_RED, _GREEN, _BLUE);
+				matrix.setTextColor(newColor);
+				showText("BLUE");
+				delay(50);
+				break;
+
+
+			default:
+				break;
+			}
+
+			*/
 
 		default:
 			break;
+
 		}
 
 		if (digitalRead(JOYSTICK_BTTN) != 1)
+		{
+			delay(100);
+			isEditing = false;
+			modeCounter++;
+
+		}
+	}
+}
+
+void MatrixClock::changeBrightess()
+{
+	bool isEditing = true;
+	uint8_t brightness = matrix.getBrightness();
+	delay(50);
+	
+
+	while (isEditing)
+	{
+		brightness = (brightness + joystick.GetMovementY() * -1) % 20;
+
+		if (brightness == 0 || brightness == 255)
+			brightness = 1;
+
+		matrix.setBrightness(brightness);
+		scrollText("BRIGHTNESS");
+		Serial.println(brightness);
+
+		if (joystick.IsPressed())
 		{
 			delay(100);
 			isEditing = false;
@@ -318,6 +390,9 @@ const MatrixClock::MODES MatrixClock::getMode()
 		return MODES::CHANGE_COLOR;
 		break;
 	case 5:
+		return MODES::CHANGE_BRIGHTNESS;
+		break;
+	case 6:
 		return MODES::DEBUG;
 		break;
 

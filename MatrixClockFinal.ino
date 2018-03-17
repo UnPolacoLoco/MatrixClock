@@ -72,11 +72,18 @@ void loop()
 		Serial.println("in mode 4: change color");
 		clock.changeTextColor();
 		break;
-	case MatrixClock::MODES::DEBUG:
-		Serial.println("in mode 5: debug");
-		
+	case MatrixClock::MODES::CHANGE_BRIGHTNESS:
+		Serial.println("in mode 5: change brightness");
+		clock.changeBrightess();
 		break;
+
+	case MatrixClock::MODES::DEBUG:
+		Serial.println("in mode 6: debug");
+		clock.showText("DEBUG");
+		break;
+
 	default:
+		Serial.println("SHOULDNT BE HERE");
 		clock.showText("ERROR");
 		break;
 	}

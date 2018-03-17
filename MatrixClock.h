@@ -22,7 +22,7 @@
 #define JOYSTICK_BTTN 13
 
 //increase when modes increase
-#define NUM_OF_MODES 6
+#define NUM_OF_MODES 7
 
 
 
@@ -50,14 +50,11 @@ public:
 		DATE,
 		TEMPERATURE,
 		CHANGE_COLOR,
+		CHANGE_BRIGHTNESS,
 		DEBUG,
 
 	};
 
-	typedef struct COLORS
-	{
-
-	};
 
 	void initialize();
 
@@ -67,9 +64,11 @@ public:
 	void showTemp();
 	void showTimeAndDate();
 
-	void drawDisplayBuffer();
+	void drawDisplayBuffer(); //TODO possibly a private function
 
 	void changeTextColor();
+
+	void changeBrightess();
 	
 	void scrollText(String textToScroll, int howFastToScroll = 150);
 	void showText(String textToShow);
