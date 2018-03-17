@@ -16,33 +16,34 @@ void MatrixClock::showFullDate()
 {
 	date = rtc.getDOWStr();
 	date += ", ";
-	
+	date += rtc.getMonthStr();
+	date += " ";
 	date += rtc.getTime().date;
 
 	if (rtc.getTime().date >= 10 && rtc.getTime().date <= 20)
 	{
-		date += "th of ";
+		date += "th";
 	}
 	else
 	{
 		switch (rtc.getTime().date % 10)
 		{
 		case 1:
-			date += "st of ";
+			date += "st";
 			break;
 		case 2:
-			date += "nd of ";
+			date += "nd";
 			break;
 		case 3:
-			date += "rd of ";
+			date += "rd";
 			break;
 		default:
-			date += "th of ";
+			date += "th";
 			break;
 		}
 	}
 		
-	date += rtc.getMonthStr();
+	
 	scrollText(date);
 
 }
@@ -121,13 +122,77 @@ void MatrixClock::showTimeAndDate()
 
 }
 
+void MatrixClock::drawDisplayBuffer()
+{
+	matrix.clear();
+
+	int8_t x = 0;
+	int8_t y = 0;
+	
+
+
+	for (int i = 0; i < matrix.numPixels(); i++)
+	{
+		x = i % matrix.width();
+		y = i / matrix.width();
+		
+		switch (displayBuffer[i])
+		{
+		case 'R':
+		case 'r':
+			matrix.drawPixel(x, y, RED);
+			break;
+		case 'G':
+		case 'g':
+			matrix.drawPixel(x, y, GREEN);
+			break;
+		case 'B':
+		case 'b':
+			matrix.drawPixel(x, y, BLUE);
+			break;
+		case 'W':
+		case 'w':
+			matrix.drawPixel(x, y, WHITE);
+			break;
+		case 'C':
+		case 'c':
+			matrix.drawPixel(x, y, CYAN);
+			break;
+		case 'Y':
+		case 'y':
+			matrix.drawPixel(x, y, YELLOW);
+			break;
+		case 'M':
+		case 'm':
+			matrix.drawPixel(x, y, MAGENTA);
+			break;
+
+		default:
+			matrix.drawPixel(x, y, BLACK);
+			break;
+		}
+		
+		
+	}
+
+	matrix.show();
+}
+
 void MatrixClock::changeTextColor()
 {
 	bool isEditing = true;
 	uint8_t letter = 0;
 
-	
-	int newColor;
+	uint16_t _RED = RED;
+	uint16_t _GREEN = RED;
+	uint16_t _BLUE = RED;
+
+	uint16_t newColor = _RED;
+
+	while (!joystick.IsPressed())
+	{
+		scrollText("Use up and down on joystick. Press the button when ready", 100);
+	}
 
 	while (isEditing)
 	{
@@ -140,9 +205,9 @@ void MatrixClock::changeTextColor()
 		case 0: //editing RED
 			Serial.println("editing RED");
 
-			RED += joystick.GetMovementY() * -25;
-			Serial.println(RED);
-			newColor = matrix.Color(RED, GREEN, BLUE);
+			_RED += joystick.GetMovementY() * -25;
+			Serial.println(_RED);
+			newColor = matrix.Color(_RED, _GREEN, _BLUE);
 			matrix.setTextColor(newColor);
 			showText("RED");
 			delay(50);
@@ -151,9 +216,9 @@ void MatrixClock::changeTextColor()
 		case 1: //editing GREEN
 			Serial.println("editing GREEN");
 
-			GREEN += joystick.GetMovementY() * -25;
-			Serial.println(GREEN);
-			newColor = matrix.Color(RED, GREEN, BLUE);
+			_GREEN += joystick.GetMovementY() * -25;
+			Serial.println(_GREEN);
+			newColor = matrix.Color(_RED, _GREEN, _BLUE);
 
 			matrix.setTextColor(newColor);
 			showText("GREEN");
@@ -163,13 +228,14 @@ void MatrixClock::changeTextColor()
 		case 2: //editing BLUE
 			Serial.println("editing BLUE");
 
-			BLUE += joystick.GetMovementY() * -25;
-			Serial.println(BLUE);
-			newColor = matrix.Color(RED, GREEN, BLUE);
+			_BLUE += joystick.GetMovementY() * -25;
+			Serial.println(_BLUE);
+			newColor = matrix.Color(_RED, _GREEN, _BLUE);
 			matrix.setTextColor(newColor);
 			showText("BLUE");
 			delay(50);
 			break;
+
 
 		default:
 			break;
@@ -204,6 +270,26 @@ void MatrixClock::initialize()
 	matrix.setTextColor(matrix.Color(255, 0, 0));
 	matrix.setFont(&TomThumb);
 
+	int counter = 0;
+
+	for (int i = 0; i < 192; i++)
+	{
+		switch (counter % 3)
+		{
+		case 0:
+			displayBuffer[i] = 'R';
+			break;
+		case 1:
+			displayBuffer[i] = 'G';
+			break;
+		case 2:
+			displayBuffer[i] = 'B';
+			break;
+		}
+
+		counter++;
+	}
+
 }
 
 void MatrixClock::changeMode()
@@ -212,7 +298,7 @@ void MatrixClock::changeMode()
 	modeCounter++;
 }
 
-const MODES MatrixClock::getMode()
+const MatrixClock::MODES MatrixClock::getMode()
 {
 	switch (modeCounter % NUM_OF_MODES)
 	{
@@ -238,7 +324,7 @@ const MODES MatrixClock::getMode()
 	}
 }
 
-void MatrixClock::scrollText(String textToScroll)
+void MatrixClock::scrollText(String textToScroll, int scrollSpeed = 150)
 {
 	int lenght = textToScroll.length();
 
@@ -252,7 +338,7 @@ void MatrixClock::scrollText(String textToScroll)
 	}
 
 	matrix.show();
-	delay(150);
+	delay(scrollSpeed);
 }
 
 void MatrixClock::showText(String textToShow)

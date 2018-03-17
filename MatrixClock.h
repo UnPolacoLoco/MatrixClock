@@ -35,20 +35,29 @@
 #include <EEPROM.h>
 #include "Joystick.h"
 
-enum MODES
-{
-	TIME_AND_DATE ,
-	TIME,
-	DATE,
-	TEMPERATURE,
-	CHANGE_COLOR,
-	DEBUG,
 
-};
 
 class MatrixClock
 {
+
+
 public:
+
+	enum MODES
+	{
+		TIME_AND_DATE,
+		TIME,
+		DATE,
+		TEMPERATURE,
+		CHANGE_COLOR,
+		DEBUG,
+
+	};
+
+	typedef struct COLORS
+	{
+
+	};
 
 	void initialize();
 
@@ -58,9 +67,11 @@ public:
 	void showTemp();
 	void showTimeAndDate();
 
+	void drawDisplayBuffer();
+
 	void changeTextColor();
 	
-	void scrollText(String textToScroll);
+	void scrollText(String textToScroll, int howFastToScroll = 150);
 	void showText(String textToShow);
 
 	void changeMode();
@@ -86,12 +97,18 @@ private:
 	String temp;
 	String time;
 
-
 	uint8_t modeCounter = 0;
 
 	uint16_t RED = matrix.Color(255, 0, 0);
 	uint16_t GREEN = matrix.Color(0, 255, 0);
 	uint16_t BLUE = matrix.Color(0, 0, 255);
+	uint16_t YELLOW = matrix.Color(255, 255, 0);
+	uint16_t CYAN = matrix.Color(0, 255, 255);
+	uint16_t MAGENTA = matrix.Color(255, 0, 255);
+	uint16_t WHITE = matrix.Color(255, 255, 255);
+	uint16_t BLACK = matrix.Color(0, 0, 0);
+
+	char displayBuffer[192];
 
 };
 

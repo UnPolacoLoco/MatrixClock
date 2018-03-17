@@ -8,8 +8,6 @@ MatrixClock clock;
 void setup() 
 {
 
-
-
 	clock.initialize();
 
 	pinMode(MATRIX_PIN, OUTPUT); //Data pin Arduino -> Matrix
@@ -26,26 +24,26 @@ void loop()
 		clock.changeMode();
 	}
 
+
 	switch (clock.getMode())
 	{
 
-	case MODES::TIME_AND_DATE:
+	case MatrixClock::MODES::TIME_AND_DATE:
 		Serial.println("In mode 0, Time and Date");
-		
 		clock.showTimeAndDate();
 		break;
 
-	case MODES::TIME:
+	case MatrixClock::MODES::TIME:
 		Serial.println("In mode 1, Just Time");
 		clock.showTime();
 		break;
 
-	case MODES::DATE:
+	case MatrixClock::MODES::DATE:
 		Serial.println("In mode 2, Just Date");
 		clock.showDate();
 		break;
 
-	case MODES::TEMPERATURE:
+	case MatrixClock::MODES::TEMPERATURE:
 
 		Serial.println("in mode 3, Temperature");
 		clock.showTemp();
@@ -70,12 +68,13 @@ void loop()
 	
 
 
-	case MODES::CHANGE_COLOR:
+	case MatrixClock::MODES::CHANGE_COLOR:
 		Serial.println("in mode 4: change color");
 		clock.changeTextColor();
 		break;
-	case MODES::DEBUG:
+	case MatrixClock::MODES::DEBUG:
 		Serial.println("in mode 5: debug");
+		
 		break;
 	default:
 		clock.showText("ERROR");
