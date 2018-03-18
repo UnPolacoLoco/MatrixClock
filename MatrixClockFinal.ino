@@ -28,22 +28,22 @@ void loop()
 	switch (clock.getMode())
 	{
 
-	case MatrixClock::MODES::TIME_AND_DATE:
+	case MODES::TIME_AND_DATE:
 		Serial.println("In mode 0, Time and Date");
 		clock.showTimeAndDate();
 		break;
 
-	case MatrixClock::MODES::TIME:
+	case MODES::TIME:
 		Serial.println("In mode 1, Just Time");
 		clock.showTime();
 		break;
 
-	case MatrixClock::MODES::DATE:
+	case MODES::DATE:
 		Serial.println("In mode 2, Just Date");
 		clock.showDate();
 		break;
 
-	case MatrixClock::MODES::TEMPERATURE:
+	case MODES::TEMPERATURE:
 
 		Serial.println("in mode 3, Temperature");
 		clock.showTemp();
@@ -68,22 +68,21 @@ void loop()
 	
 
 
-	case MatrixClock::MODES::CHANGE_COLOR:
+	case MODES::CHANGE_COLOR:
 		Serial.println("in mode 4: change color");
 		clock.changeTextColor();
 		break;
-	case MatrixClock::MODES::CHANGE_BRIGHTNESS:
+	case MODES::CHANGE_BRIGHTNESS:
 		Serial.println("in mode 5: change brightness");
 		clock.changeBrightess();
 		break;
 
-	case MatrixClock::MODES::DEBUG:
+	case MODES::DEBUG:
 		Serial.println("in mode 6: debug");
 		clock.showText("DEBUG");
 		break;
 
 	default:
-		Serial.println("SHOULDNT BE HERE");
 		clock.showText("ERROR");
 		break;
 	}

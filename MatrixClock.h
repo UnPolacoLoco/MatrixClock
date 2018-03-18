@@ -35,26 +35,23 @@
 #include <EEPROM.h>
 #include "Joystick.h"
 
+enum class MODES
+{
+	TIME_AND_DATE,
+	TIME,
+	DATE,
+	TEMPERATURE,
+	CHANGE_COLOR,
+	CHANGE_BRIGHTNESS,
+	DEBUG,
 
+};
 
 class MatrixClock
 {
 
 
 public:
-
-	enum MODES
-	{
-		TIME_AND_DATE,
-		TIME,
-		DATE,
-		TEMPERATURE,
-		CHANGE_COLOR,
-		CHANGE_BRIGHTNESS,
-		DEBUG,
-
-	};
-
 
 	void initialize();
 
@@ -97,6 +94,7 @@ private:
 	String time;
 
 	uint8_t modeCounter = 0;
+	uint8_t MAX_BRIGHTNESS = 25;
 
 	uint16_t RED = matrix.Color(255, 0, 0);
 	uint16_t GREEN = matrix.Color(0, 255, 0);
@@ -110,6 +108,8 @@ private:
 	char displayBuffer[192];
 
 };
+
+
 
 #endif
 

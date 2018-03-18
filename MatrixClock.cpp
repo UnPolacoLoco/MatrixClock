@@ -24,6 +24,7 @@ void MatrixClock::showFullDate()
 	{
 		date += "th";
 	}
+
 	else
 	{
 		switch (rtc.getTime().date % 10)
@@ -43,9 +44,7 @@ void MatrixClock::showFullDate()
 		}
 	}
 		
-	
 	scrollText(date);
-
 }
 
 void MatrixClock::showTime()
@@ -100,7 +99,7 @@ void MatrixClock::showTimeAndDate()
 	unsigned long currentTime = millis();
 	bool modeChanged = false;
 
-	while ((millis() - currentTime) < 10000 && !modeChanged) //show the clock for 10000ms (10s)
+	while ((millis() - currentTime) < 15000 && !modeChanged) //show the time for 15000ms (15s)
 	{
 		showTime();
 		modeChanged = joystick.IsPressed();
@@ -109,7 +108,7 @@ void MatrixClock::showTimeAndDate()
 	currentTime = millis();
 	x = matrix.width();
 
-	while ((millis() - currentTime) < 16000 && !modeChanged) //it takes 16000ms (16s) to scroll the entire FullDate()
+	while ((millis() - currentTime) < 16000 && !modeChanged) //it takes ~16000ms (16s) to scroll the entire FullDate()
 	{
 		showFullDate();
 		modeChanged = joystick.IsPressed();
@@ -304,14 +303,24 @@ void MatrixClock::changeBrightess()
 
 	while (isEditing)
 	{
-		brightness = (brightness + joystick.GetMovementY() * -1) % 20;
+		brightness = (brightness + joystick.GetMovementY() * -1);
 
-		if (brightness == 0 || brightness == 255)
+		if (brightness > (MAX_BRIGHTNESS - 1))
+		{
+			delay(100);
+			brightness = (MAX_BRIGHTNESS - 1);
+		}
+		else if (brightness < 1)
+		{
+			delay(100);
 			brightness = 1;
+		}
+
+		brightness %= MAX_BRIGHTNESS;
 
 		matrix.setBrightness(brightness);
 		scrollText("BRIGHTNESS");
-		Serial.println(brightness);
+
 
 		if (joystick.IsPressed())
 		{
@@ -342,24 +351,11 @@ void MatrixClock::initialize()
 	matrix.setTextColor(matrix.Color(255, 0, 0));
 	matrix.setFont(&TomThumb);
 
-	int counter = 0;
 
+	//initialize the display buffer to be empty
 	for (int i = 0; i < 192; i++)
 	{
-		switch (counter % 3)
-		{
-		case 0:
-			displayBuffer[i] = 'R';
-			break;
-		case 1:
-			displayBuffer[i] = 'G';
-			break;
-		case 2:
-			displayBuffer[i] = 'B';
-			break;
-		}
-
-		counter++;
+		displayBuffer[i] = ' ';
 	}
 
 }
@@ -370,7 +366,7 @@ void MatrixClock::changeMode()
 	modeCounter++;
 }
 
-const MatrixClock::MODES MatrixClock::getMode()
+const MODES MatrixClock::getMode()
 {
 	switch (modeCounter % NUM_OF_MODES)
 	{
