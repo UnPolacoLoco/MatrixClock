@@ -303,24 +303,12 @@ void MatrixClock::changeBrightess()
 
 	while (isEditing)
 	{
-		brightness = (brightness + joystick.GetMovementY() * -1);
+		brightness -= joystick.GetMovementY();
 
-		if (brightness > (MAX_BRIGHTNESS - 1))
-		{
-			delay(100);
-			brightness = (MAX_BRIGHTNESS - 1);
-		}
-		else if (brightness < 1)
-		{
-			delay(100);
-			brightness = 1;
-		}
-
-		brightness %= MAX_BRIGHTNESS;
+		brightness = constrain(brightness, 1, MAX_BRIGHTNESS);
 
 		matrix.setBrightness(brightness);
 		scrollText("BRIGHTNESS");
-
 
 		if (joystick.IsPressed())
 		{
