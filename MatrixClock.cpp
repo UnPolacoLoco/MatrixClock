@@ -77,7 +77,7 @@ void MatrixClock::showTime()
 
 void MatrixClock::showTemp()
 {
-	if (joystick.GetMovementX() == 0)
+	if (joystick.getMovementX() == 0)
 	{
 				
 		temp = (int)rtc.getTemp();
@@ -99,10 +99,10 @@ void MatrixClock::showTimeAndDate()
 	unsigned long currentTime = millis();
 	bool modeChanged = false;
 
-	while ((millis() - currentTime) < 15000 && !modeChanged) //show the time for 15000ms (15s)
+	while ((millis() - currentTime) < 25000 && !modeChanged) //show the time for 25000ms (25s)
 	{
 		showTime();
-		modeChanged = joystick.IsPressed();
+		modeChanged = joystick.isPressed();
 	}
 
 	currentTime = millis();
@@ -111,7 +111,7 @@ void MatrixClock::showTimeAndDate()
 	while ((millis() - currentTime) < 16000 && !modeChanged) //it takes ~16000ms (16s) to scroll the entire FullDate()
 	{
 		showFullDate();
-		modeChanged = joystick.IsPressed();
+		modeChanged = joystick.isPressed();
 	}
 
 	if (modeChanged)
@@ -125,56 +125,61 @@ void MatrixClock::drawDisplayBuffer()
 {
 	matrix.clear();
 
-	int8_t x = 0;
-	int8_t y = 0;
 	
 
-
-	for (int i = 0; i < matrix.numPixels(); i++)
+	for (int x = 0; x < 24; x++)
 	{
-		x = i % matrix.width();
-		y = i / matrix.width();
-		
-		switch (displayBuffer[i])
-		{
-		case 'R':
-		case 'r':
-			matrix.drawPixel(x, y, RED);
-			break;
-		case 'G':
-		case 'g':
-			matrix.drawPixel(x, y, GREEN);
-			break;
-		case 'B':
-		case 'b':
-			matrix.drawPixel(x, y, BLUE);
-			break;
-		case 'W':
-		case 'w':
-			matrix.drawPixel(x, y, WHITE);
-			break;
-		case 'C':
-		case 'c':
-			matrix.drawPixel(x, y, CYAN);
-			break;
-		case 'Y':
-		case 'y':
-			matrix.drawPixel(x, y, YELLOW);
-			break;
-		case 'M':
-		case 'm':
-			matrix.drawPixel(x, y, MAGENTA);
-			break;
+		for(int y = 0; y < 8; y++)
+		{ 
+			switch (displayBuffer[x][y])
+			{
+			case 'R':
+			case 'r':
+				matrix.drawPixel(x, y, RED);
+				break;
+			case 'G':
+			case 'g':
+				matrix.drawPixel(x, y, GREEN);
+				break;
+			case 'B':
+			case 'b':
+				matrix.drawPixel(x, y, BLUE);
+				break;
+			case 'W':
+			case 'w':
+				matrix.drawPixel(x, y, WHITE);
+				break;
+			case 'C':
+			case 'c':
+				matrix.drawPixel(x, y, CYAN);
+				break;
+			case 'Y':
+			case 'y':
+				matrix.drawPixel(x, y, YELLOW);
+				break;
+			case 'M':
+			case 'm':
+				matrix.drawPixel(x, y, MAGENTA);
+				break;
 
-		default:
-			matrix.drawPixel(x, y, BLACK);
-			break;
+			default:
+				matrix.drawPixel(x, y, BLACK);
+				break;
+			}
 		}
 		
 		
 	}
 
 	matrix.show();
+}
+
+void MatrixClock::setBufferForTest()
+{
+	displayBuffer[7][2] = 'R';
+	displayBuffer[14][2] = 'G';
+	displayBuffer[21][2] = 'B';
+
 }
 
 void MatrixClock::changeTextColor()
@@ -185,7 +190,7 @@ void MatrixClock::changeTextColor()
 	
 	while (isEditing)
 	{
-		selectColor += joystick.GetMovementX();
+		selectColor += joystick.getMovementX();
 		delay(50);
 
 		switch (selectColor % 7)
@@ -303,14 +308,13 @@ void MatrixClock::changeBrightess()
 
 	while (isEditing)
 	{
-		brightness -= joystick.GetMovementY();
-
+		brightness -= joystick.getMovementY();
 		brightness = constrain(brightness, 1, MAX_BRIGHTNESS);
 
 		matrix.setBrightness(brightness);
 		scrollText("BRIGHTNESS");
 
-		if (joystick.IsPressed())
+		if (joystick.isPressed())
 		{
 			delay(100);
 			isEditing = false;
@@ -341,10 +345,10 @@ void MatrixClock::initialize()
 
 
 	//initialize the display buffer to be empty
-	for (int i = 0; i < 192; i++)
+	/*for (int i = 0; i < 192; i++)
 	{
 		displayBuffer[i] = ' ';
-	}
+	}*/
 
 }
 

@@ -28,23 +28,23 @@ public:
 	Joystick(int8_t analogX, int8_t analogY, int8_t joystickButton);
 
 	//get current analog readings from Arduino analog ports
-	int16_t GetAnalogX();
-	int16_t GetAnalogY();
+	int16_t getAnalogX();
+	int16_t getAnalogY();
 
 	//Gets currentX and Y positions (stored in the private variables)
-	int8_t GetCurrentX();
-	int8_t GetCurrentY();
+	int8_t getCurrentX();
+	int8_t getCurrentY();
 
 	//sets the private variables currentX and currentY based on relative movement of the joystick
-	int8_t GetRelativeX();
-	int8_t GetRelativeY();
+	int8_t getRelativeX();
+	int8_t getRelativeY();
 
 	//gets relative movement of the joystick on both axis, returns 1, -1 or 0
-	int8_t GetMovementX();
-	int8_t GetMovementY();
+	int8_t getMovementX();
+	int8_t getMovementY();
 
 	//reads digital port and returns true if button is pressed at the time of polling.
-	bool IsPressed();
+	bool isPressed();
 	
 
 
