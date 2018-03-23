@@ -47,6 +47,28 @@ enum class MODES
 
 };
 
+struct
+{
+	//ball starts off mroe or less in the middle of the display.
+	int8_t x = 14;
+	int8_t y = 4;
+
+	//ball starts off going away from the paddle.
+	int8_t momentumX = 1;
+	int8_t momentumY = 1;
+
+} ball;
+
+struct paddle
+{
+	int8_t pongPaddle[3] = { 2,3,4 };
+	int8_t startX;
+	char color;
+	int8_t score = 0;
+
+
+};
+
 class MatrixClock
 {
 
@@ -76,7 +98,12 @@ public:
 
 	//display buffer to facilitate calling drawPixel methods on each pixel from an array of chars.
 	void drawDisplayBuffer(); //TODO possibly a private function
+	void clearDisplayBuffer();
 	void setBufferForTest();
+	
+
+
+	void PlayPong();
 
 private:
 
@@ -114,6 +141,15 @@ private:
 	const uint16_t BLACK = matrix.Color(0, 0, 0);
 
 	char displayBuffer[24][8];
+
+	paddle paddle1;
+	paddle paddle2;
+	void movePaddle(int8_t direction);
+	void moveBall();
+	void resetBall();
+	void updatePaddleLocation(paddle &paddle);
+	void updateBallLocation();
+	bool didPaddleHitBall();
 
 };
 

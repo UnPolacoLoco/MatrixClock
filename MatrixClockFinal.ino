@@ -24,7 +24,6 @@ void loop()
 		clock.changeMode();
 	}
 
-	clock.setBufferForTest();
 
 	switch (clock.getMode())
 	{
@@ -79,8 +78,8 @@ void loop()
 		break;
 
 	case MODES::DEBUG:
-		Serial.println("in mode 6: debug");
-		clock.drawDisplayBuffer();
+		Serial.println("in mode 6: Pong?");
+		clock.PlayPong();
 	
 		break;
 

@@ -5,6 +5,43 @@
 #include "MatrixClock.h"
 
 
+void MatrixClock::initialize()
+{
+	rtc.begin();
+
+	if (EEPROM.read(setAddress) != 1)
+	{
+		rtc.setDOW(THURSDAY);     // Set Day-of-Week to Thursday
+		rtc.setTime(21, 00, 0);     // Set the time to 21:00:00 (24hr format)
+		rtc.setDate(22, 2, 2018);   //Set date to 22nd of Feb, 2018
+		EEPROM.write(setAddress, 1);
+	}
+
+
+	matrix.begin();
+	matrix.setTextWrap(false);
+	matrix.setBrightness(10);
+	matrix.setTextColor(matrix.Color(255, 0, 0));
+	matrix.setFont(&TomThumb);
+
+	paddle1.startX = 0;
+	paddle1.color = 'R';
+
+	paddle2.startX = 23;
+	paddle2.color = 'B';
+
+
+	for (int i = 0; i < matrix.height(); i++)
+	{
+		for (int j = 0; j < matrix.width(); j++)
+		{
+			displayBuffer[i][j] = ' ';
+		}
+	}
+
+	randomSeed(analogRead(A3));
+}
+
 void MatrixClock::showDate()
 {
 	date = rtc.getDateStr();
@@ -174,12 +211,172 @@ void MatrixClock::drawDisplayBuffer()
 	matrix.show();
 }
 
+void MatrixClock::clearDisplayBuffer()
+{
+
+	for (int x = 0; x < 24; x++)
+	{
+		for (int y = 0; y < 8; y++)
+		{
+			displayBuffer[x][y] = ' ';
+		}
+	}
+
+}
+
 void MatrixClock::setBufferForTest()
 {
 	displayBuffer[7][2] = 'R';
 	displayBuffer[14][2] = 'G';
 	displayBuffer[21][2] = 'B';
 
+}
+
+void MatrixClock::PlayPong()
+{
+	bool isPlaying = true;
+	clearDisplayBuffer();
+	drawDisplayBuffer();
+
+	while (isPlaying)
+	{
+		//timing and input
+
+		movePaddle(joystick.getMovementY());
+		moveBall();
+		delay(100);
+
+
+		//game logic
+	
+			clearDisplayBuffer();
+			updatePaddleLocation(paddle1);
+			updatePaddleLocation(paddle2);
+			updateBallLocation();
+			didPaddleHitBall();
+			
+			
+			
+		
+		
+
+		//Display to player
+		
+			drawDisplayBuffer();
+
+		//exit game logic
+		if (joystick.isPressed())
+		{
+			String score;
+			score += paddle1.score;
+			score += " - ";
+			score += paddle2.score;
+			showText(score);
+			delay(2000);
+			isPlaying = false;
+			paddle1.score = 0;
+			paddle2.score = 0;
+			modeCounter++;
+
+		}
+	}
+}
+
+void MatrixClock::movePaddle(int8_t direction)
+{
+	//check whether the paddle is heading out of bounds
+	if (paddle1.pongPaddle[0] + direction < 0 || paddle1.pongPaddle[2] + direction > 7) return;
+
+	paddle1.pongPaddle[0] += direction;
+	paddle1.pongPaddle[1] += direction;
+	paddle1.pongPaddle[2] += direction;
+}
+
+void MatrixClock::moveBall()
+{
+	
+	if(ball.x + ball.momentumX > 23 || ball.x + ball.momentumX < 0)
+	{
+		ball.momentumX *= -1;
+		
+	} 
+	ball.x += ball.momentumX;
+
+	if (ball.y + ball.momentumY > 7 || ball.y + ball.momentumY < 0)
+	{
+		ball.momentumY *= -1;
+	
+	}
+	ball.y += ball.momentumY;
+
+
+	
+}
+
+void MatrixClock::resetBall()
+{
+	ball.x = random(8, 15);
+	ball.y = random(0, 7);
+}
+
+void MatrixClock::updatePaddleLocation(paddle& paddle)
+{
+	displayBuffer[paddle.startX][paddle.pongPaddle[0]] = paddle.color;
+	displayBuffer[paddle.startX][paddle.pongPaddle[1]] = paddle.color;
+	displayBuffer[paddle.startX][paddle.pongPaddle[2]] = paddle.color;
+}
+
+void MatrixClock::updateBallLocation()
+{
+	displayBuffer[ball.x][ball.y] = 'W';
+}
+
+bool MatrixClock::didPaddleHitBall()
+{
+	//checks if the ball hits one of the parts of the player paddle
+	if ((ball.y == paddle1.pongPaddle[0] && ball.x == 1) || 
+		(ball.y == paddle1.pongPaddle[1] && ball.x == 1) || 
+		(ball.y == paddle1.pongPaddle[2] && ball.x == 1))
+	{
+		ball.momentumX = 1;
+		return true;
+	}
+
+	//check to see if the ball hits the player paddle diagonally from top right
+	else if ((ball.momentumY > 0 && ball.y == (paddle1.pongPaddle[0] - 1) && ball.x == 1))
+	{
+		ball.momentumX = 1;
+		ball.momentumY *= -1;
+		return true;
+	}
+
+	//check to see if the ball hits the player paddle diagonally from bottom right
+	else if ((ball.momentumY < 0 && ball.y == (paddle1.pongPaddle[0] + 1) && ball.x == 1))
+	{
+		ball.momentumX = 1;
+		ball.momentumY *= -1;
+		return true;
+	}
+
+	else if ((ball.y == paddle2.pongPaddle[0] && ball.x == 22) || (ball.y == paddle2.pongPaddle[1] && ball.x == 22) || (ball.y == paddle2.pongPaddle[2] && ball.x == 22))
+	{
+		ball.momentumX = -1;
+		return true;
+	}
+	else if(ball.x <= 0)
+	{
+		paddle2.score++;
+		resetBall();
+		delay(100);
+		return false;
+	}
+	else if (ball.x >= 23)
+	{
+		paddle1.score++;
+		resetBall();
+		delay(100);
+		return false;
+	}
 }
 
 void MatrixClock::changeTextColor()
@@ -324,38 +521,14 @@ void MatrixClock::changeBrightess()
 	}
 }
 
-void MatrixClock::initialize()
-{
-	rtc.begin();
 
-	if (EEPROM.read(setAddress) != 1)
-	{
-		rtc.setDOW(THURSDAY);     // Set Day-of-Week to Thursday
-		rtc.setTime(21, 00, 0);     // Set the time to 21:00:00 (24hr format)
-		rtc.setDate(22, 2, 2018);   //Set date to 22nd of Feb, 2018
-		EEPROM.write(setAddress, 1);
-	}
-
-
-	matrix.begin();
-	matrix.setTextWrap(false);
-	matrix.setBrightness(10);
-	matrix.setTextColor(matrix.Color(255, 0, 0));
-	matrix.setFont(&TomThumb);
-
-
-	//initialize the display buffer to be empty
-	/*for (int i = 0; i < 192; i++)
-	{
-		displayBuffer[i] = ' ';
-	}*/
-
-}
 
 void MatrixClock::changeMode()
 {
+	
 	delay(200);
 	modeCounter++;
+	
 }
 
 const MODES MatrixClock::getMode()
