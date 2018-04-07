@@ -31,6 +31,7 @@ void MatrixClock::initialize()
 	paddle2.color = 'B';
 
 
+
 	for (int i = 0; i < matrix.height(); i++)
 	{
 		for (int j = 0; j < matrix.width(); j++)
@@ -242,7 +243,9 @@ void MatrixClock::PlayPong()
 	{
 		//timing and input
 
-		movePaddle(joystick.getMovementY());
+		movePaddle(paddle1, joystick.getMovementY());
+		movePaddle(paddle2, (random(0,1023) > 512 ? -1 : 1 ));
+	
 		moveBall();
 		delay(100);
 
@@ -282,14 +285,14 @@ void MatrixClock::PlayPong()
 	}
 }
 
-void MatrixClock::movePaddle(int8_t direction)
+void MatrixClock::movePaddle(paddle& paddle, int8_t direction)
 {
 	//check whether the paddle is heading out of bounds
-	if (paddle1.pongPaddle[0] + direction < 0 || paddle1.pongPaddle[2] + direction > 7) return;
+	if (paddle.pongPaddle[0] + direction < 0 || paddle.pongPaddle[1] + direction > 7) return;
 
-	paddle1.pongPaddle[0] += direction;
-	paddle1.pongPaddle[1] += direction;
-	paddle1.pongPaddle[2] += direction;
+	paddle.pongPaddle[0] += direction;
+	paddle.pongPaddle[1] += direction;
+	//paddle1.pongPaddle[2] += direction;
 }
 
 void MatrixClock::moveBall()
@@ -319,11 +322,12 @@ void MatrixClock::resetBall()
 	ball.y = random(0, 7);
 }
 
-void MatrixClock::updatePaddleLocation(paddle& paddle)
+void MatrixClock::updatePaddleLocation(paddle& paddle) //draw paddle in the display buffer
 {
+
 	displayBuffer[paddle.startX][paddle.pongPaddle[0]] = paddle.color;
 	displayBuffer[paddle.startX][paddle.pongPaddle[1]] = paddle.color;
-	displayBuffer[paddle.startX][paddle.pongPaddle[2]] = paddle.color;
+	//displayBuffer[paddle.startX][paddle.pongPaddle[2]] = paddle.color;
 }
 
 void MatrixClock::updateBallLocation()
@@ -335,8 +339,8 @@ bool MatrixClock::didPaddleHitBall()
 {
 	//checks if the ball hits one of the parts of the player paddle
 	if ((ball.y == paddle1.pongPaddle[0] && ball.x == 1) || 
-		(ball.y == paddle1.pongPaddle[1] && ball.x == 1) || 
-		(ball.y == paddle1.pongPaddle[2] && ball.x == 1))
+		(ball.y == paddle1.pongPaddle[1] && ball.x == 1))
+		// ||(ball.y == paddle1.pongPaddle[2] && ball.x == 1))
 	{
 		ball.momentumX = 1;
 		return true;
@@ -351,18 +355,21 @@ bool MatrixClock::didPaddleHitBall()
 	}
 
 	//check to see if the ball hits the player paddle diagonally from bottom right
-	else if ((ball.momentumY < 0 && ball.y == (paddle1.pongPaddle[0] + 1) && ball.x == 1))
+	else if ((ball.momentumY < 0 && ball.y == (paddle1.pongPaddle[1] + 1) && ball.x == 1))
 	{
 		ball.momentumX = 1;
 		ball.momentumY *= -1;
 		return true;
 	}
 
-	else if ((ball.y == paddle2.pongPaddle[0] && ball.x == 22) || (ball.y == paddle2.pongPaddle[1] && ball.x == 22) || (ball.y == paddle2.pongPaddle[2] && ball.x == 22))
+	else if ((ball.y == paddle2.pongPaddle[0] && ball.x == 22) ||
+		(ball.y == paddle2.pongPaddle[1] && ball.x == 22)) 
+		// || (ball.y == paddle2.pongPaddle[2] && ball.x == 22))
 	{
 		ball.momentumX = -1;
 		return true;
 	}
+
 	else if(ball.x <= 0)
 	{
 		paddle2.score++;
@@ -554,7 +561,7 @@ const MODES MatrixClock::getMode()
 		return MODES::CHANGE_BRIGHTNESS;
 		break;
 	case 6:
-		return MODES::DEBUG;
+		return MODES::PONG;
 		break;
 
 	}

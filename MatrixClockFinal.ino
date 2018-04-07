@@ -77,7 +77,7 @@ void loop()
 		clock.changeBrightess();
 		break;
 
-	case MODES::DEBUG:
+	case MODES::PONG:
 		Serial.println("in mode 6: Pong?");
 		clock.PlayPong();
 	

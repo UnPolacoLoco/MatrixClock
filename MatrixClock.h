@@ -43,7 +43,7 @@ enum class MODES
 	TEMPERATURE,
 	CHANGE_COLOR,
 	CHANGE_BRIGHTNESS,
-	DEBUG,
+	PONG,
 
 };
 
@@ -61,10 +61,11 @@ struct
 
 struct paddle
 {
-	int8_t pongPaddle[3] = { 2,3,4 };
+	int8_t pongPaddle[2] = { 2,3 };
 	int8_t startX;
 	char color;
 	int8_t score = 0;
+	int8_t paddleLenght = 2;
 
 
 };
@@ -144,7 +145,7 @@ private:
 
 	paddle paddle1;
 	paddle paddle2;
-	void movePaddle(int8_t direction);
+	void movePaddle(paddle &paddle, int8_t direction);
 	void moveBall();
 	void resetBall();
 	void updatePaddleLocation(paddle &paddle);
