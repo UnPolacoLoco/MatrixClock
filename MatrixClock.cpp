@@ -288,10 +288,10 @@ void MatrixClock::PlayPong()
 void MatrixClock::movePaddle(paddle& paddle, int8_t direction)
 {
 	//check whether the paddle is heading out of bounds
-	if (paddle.pongPaddle[0] + direction < 0 || paddle.pongPaddle[1] + direction > 7) return;
+	if (paddle.paddleBlocks[0] + direction < 0 || paddle.paddleBlocks[1] + direction > 7) return;
 
-	paddle.pongPaddle[0] += direction;
-	paddle.pongPaddle[1] += direction;
+	paddle.paddleBlocks[0] += direction;
+	paddle.paddleBlocks[1] += direction;
 	//paddle1.pongPaddle[2] += direction;
 }
 
@@ -325,8 +325,8 @@ void MatrixClock::resetBall()
 void MatrixClock::updatePaddleLocation(paddle& paddle) //draw paddle in the display buffer
 {
 
-	displayBuffer[paddle.startX][paddle.pongPaddle[0]] = paddle.color;
-	displayBuffer[paddle.startX][paddle.pongPaddle[1]] = paddle.color;
+	displayBuffer[paddle.startX][paddle.paddleBlocks[0]] = paddle.color;
+	displayBuffer[paddle.startX][paddle.paddleBlocks[1]] = paddle.color;
 	//displayBuffer[paddle.startX][paddle.pongPaddle[2]] = paddle.color;
 }
 
@@ -338,8 +338,8 @@ void MatrixClock::updateBallLocation()
 bool MatrixClock::didPaddleHitBall()
 {
 	//checks if the ball hits one of the parts of the player paddle
-	if ((ball.y == paddle1.pongPaddle[0] && ball.x == 1) || 
-		(ball.y == paddle1.pongPaddle[1] && ball.x == 1))
+	if ((ball.y == paddle1.paddleBlocks[0] && ball.x == 1) || 
+		(ball.y == paddle1.paddleBlocks[1] && ball.x == 1))
 		// ||(ball.y == paddle1.pongPaddle[2] && ball.x == 1))
 	{
 		ball.momentumX = 1;
@@ -347,7 +347,7 @@ bool MatrixClock::didPaddleHitBall()
 	}
 
 	//check to see if the ball hits the player paddle diagonally from top right
-	else if ((ball.momentumY > 0 && ball.y == (paddle1.pongPaddle[0] - 1) && ball.x == 1))
+	else if ((ball.momentumY > 0 && ball.y == (paddle1.paddleBlocks[0] - 1) && ball.x == 1))
 	{
 		ball.momentumX = 1;
 		ball.momentumY *= -1;
@@ -355,15 +355,15 @@ bool MatrixClock::didPaddleHitBall()
 	}
 
 	//check to see if the ball hits the player paddle diagonally from bottom right
-	else if ((ball.momentumY < 0 && ball.y == (paddle1.pongPaddle[1] + 1) && ball.x == 1))
+	else if ((ball.momentumY < 0 && ball.y == (paddle1.paddleBlocks[1] + 1) && ball.x == 1))
 	{
 		ball.momentumX = 1;
 		ball.momentumY *= -1;
 		return true;
 	}
 
-	else if ((ball.y == paddle2.pongPaddle[0] && ball.x == 22) ||
-		(ball.y == paddle2.pongPaddle[1] && ball.x == 22)) 
+	else if ((ball.y == paddle2.paddleBlocks[0] && ball.x == 22) ||
+		(ball.y == paddle2.paddleBlocks[1] && ball.x == 22)) 
 		// || (ball.y == paddle2.pongPaddle[2] && ball.x == 22))
 	{
 		ball.momentumX = -1;
@@ -538,33 +538,11 @@ void MatrixClock::changeMode()
 	
 }
 
-const MODES MatrixClock::getMode()
+const uint8_t MatrixClock::getMode()
 {
-	switch (modeCounter % NUM_OF_MODES)
-	{
-	case 0:
-		return MODES::TIME_AND_DATE;
-		break;
-	case 1:
-		return MODES::TIME;
-		break;
-	case 2:
-		return MODES::DATE;
-		break;
-	case 3:
-		return MODES::TEMPERATURE;
-		break;
-	case 4:
-		return MODES::CHANGE_COLOR;
-		break;
-	case 5:
-		return MODES::CHANGE_BRIGHTNESS;
-		break;
-	case 6:
-		return MODES::PONG;
-		break;
+	return modeCounter % NUM_OF_MODES;
+	
 
-	}
 }
 
 void MatrixClock::scrollText(String textToScroll, int scrollSpeed = 150)

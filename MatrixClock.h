@@ -22,7 +22,7 @@
 #define JOYSTICK_BTTN 13
 
 //increase when modes increase
-#define NUM_OF_MODES 7
+#define NUM_OF_MODES 8
 
 
 
@@ -34,18 +34,6 @@
 #include <DS3231.h>
 #include <EEPROM.h>
 #include "Joystick.h"
-
-enum class MODES
-{
-	TIME_AND_DATE,
-	TIME,
-	DATE,
-	TEMPERATURE,
-	CHANGE_COLOR,
-	CHANGE_BRIGHTNESS,
-	PONG,
-
-};
 
 struct
 {
@@ -61,12 +49,11 @@ struct
 
 struct paddle
 {
-	int8_t pongPaddle[2] = { 2,3 };
+	int8_t paddleBlocks[2] = { 2,3 };
 	int8_t startX;
 	char color;
 	int8_t score = 0;
 	int8_t paddleLenght = 2;
-
 
 };
 
@@ -95,7 +82,7 @@ public:
 	
 	//manipulate mode selection. Logic(e.g: change mode when button is pressed) has to be applied in main()
 	void changeMode();
-	const MODES getMode();
+	const uint8_t getMode();
 
 	//display buffer to facilitate calling drawPixel methods on each pixel from an array of chars.
 	void drawDisplayBuffer(); //TODO possibly a private function
@@ -145,6 +132,7 @@ private:
 
 	paddle paddle1;
 	paddle paddle2;
+
 	void movePaddle(paddle &paddle, int8_t direction);
 	void moveBall();
 	void resetBall();
