@@ -87,9 +87,7 @@ public:
 	//display buffer to facilitate calling drawPixel methods on each pixel from an array of chars.
 	void drawDisplayBuffer(); //TODO possibly a private function
 	void clearDisplayBuffer();
-	void setBufferForTest();
 	
-
 
 	void PlayPong();
 
