@@ -52,7 +52,7 @@ struct paddle
 	int8_t paddleBlocks[2] = { 2,3 };
 	int8_t startX;
 	char color;
-	int8_t score = 0;
+	uint8_t score = 0;
 	int8_t paddleLenght = 2;
 
 };
@@ -134,8 +134,6 @@ private:
 	void movePaddle(paddle &paddle, int8_t direction);
 	void moveBall();
 	void resetBall();
-	void updatePaddleLocation(paddle &paddle);
-	void updateBallLocation();
 	bool didPaddleHitBall();
 
 };
