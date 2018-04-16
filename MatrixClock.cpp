@@ -444,7 +444,8 @@ void MatrixClock::PlayPong()
 		movePaddle(paddle1, playerMovement);
 		movePaddle(paddle2, aiMovement);
 		moveBall();
-		didPaddleHitBall();
+		didPaddleHitBall(paddle1);
+		didPaddleHitBall(paddle2);
 
 		//display to player
 		drawDisplayBuffer();
@@ -455,9 +456,9 @@ void MatrixClock::PlayPong()
 		if (joystick.isPressed())
 		{
 			String score;
-			score += paddle1.score;
-			score += "-";
 			score += paddle2.score;
+			score += "-";
+			score += paddle1.score;
 			showText(score);
 			delay(2000);
 			isPlaying = false;
@@ -507,7 +508,6 @@ void MatrixClock::moveBall()
 	displayBuffer[ball.x][ball.y] = 'W';
 
 
-
 }
 
 void MatrixClock::resetBall()
@@ -517,52 +517,39 @@ void MatrixClock::resetBall()
 }
 
 
-bool MatrixClock::didPaddleHitBall()
+bool MatrixClock::didPaddleHitBall(paddle& paddle)
 {
-	//checks if the ball hits one of the parts of the player paddle
-	if ((ball.y == paddle1.paddleBlocks[0] && ball.x == 0) ||
-		(ball.y == paddle1.paddleBlocks[1] && ball.x == 0))
+	//checks if the ball hits one of the parts of the passed in paddle paddle
+	if ((ball.y == paddle.paddleBlocks[0] && ball.x == paddle.startX - (ball.momentumX) ||
+		(ball.y == paddle.paddleBlocks[1] && ball.x == paddle.startX - (ball.momentumX))))
 	{
-		ball.momentumX = 1;
+		ball.momentumX *= -1;
 		return true;
 	}
 
-	//check to see if the ball hits the player paddle diagonally from top right
-	else if ((ball.momentumY > 0 && ball.y == (paddle1.paddleBlocks[0] - 1) && ball.x == 1))
+	//check to see if the ball hits the passed in paddle diagonally from top right
+	else if ((ball.y == (paddle.paddleBlocks[0] - 1) && ball.x == paddle.startX - (ball.momentumX)))
 	{
-		ball.momentumX = 1;
+		ball.momentumX *= -1;
 		ball.momentumY *= -1;
 		return true;
 	}
 
-	//check to see if the ball hits the player paddle diagonally from bottom right
-	else if ((ball.momentumY < 0 && ball.y == (paddle1.paddleBlocks[1] + 1) && ball.x == 1))
+	//check to see if the ball hits the passed in paddle diagonally from bottom right
+	else if ((ball.y == (paddle.paddleBlocks[1] + 1) && ball.x == paddle.startX - (ball.momentumX)))
 	{
-		ball.momentumX = 1;
+		ball.momentumX *= -1;
 		ball.momentumY *= -1;
 		return true;
 	}
 
-	else if ((ball.y == paddle2.paddleBlocks[0] && ball.x == 22) ||
-		(ball.y == paddle2.paddleBlocks[1] && ball.x == 22))
+	else if (ball.x == paddle.startX)
 	{
-		ball.momentumX = -1;
-		return true;
+		paddle.score++;
+		resetBall();
+		delay(100);
+		return false;
 	}
 
-	else if (ball.x <= 0)
-	{
-		paddle2.score++;
-		resetBall();
-		delay(100);
-		return false;
-	}
-	else if (ball.x >= 23)
-	{
-		paddle1.score++;
-		resetBall();
-		delay(100);
-		return false;
-	}
 }
 #pragma endregion

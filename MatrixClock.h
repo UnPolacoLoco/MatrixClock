@@ -42,7 +42,7 @@ struct
 	int8_t y = 4;
 
 	//ball starts off going away from the paddle.
-	int8_t momentumX = 1;
+	int8_t momentumX = -1;
 	int8_t momentumY = 1;
 
 } ball;
@@ -134,7 +134,7 @@ private:
 	void movePaddle(paddle &paddle, int8_t direction);
 	void moveBall();
 	void resetBall();
-	bool didPaddleHitBall();
+	bool didPaddleHitBall(paddle& paddle);
 
 };
 
