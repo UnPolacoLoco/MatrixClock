@@ -36,19 +36,6 @@ int8_t Joystick::getCurrentY()
 	return currentY;
 }
 
-//gets new X position based on joystick movement relative to the currentX position reference
-int8_t Joystick::getRelativeX()
-{
-	if (currentX + getMovementX() >= BOTTOM_X && currentX + getMovementX() <= UPPER_X)
-	return currentX += getMovementX();
-}
-
-//gets new Y position based on joystick movement relative to the currentX position reference
-int8_t Joystick::getRelativeY()
-{
-	if (currentY + getMovementY() >= BOTTOM_Y && currentY + getMovementY() <= UPPER_Y)
-	return currentY += getMovementY();
-}
 
 int8_t Joystick::getMovementX()
 {
