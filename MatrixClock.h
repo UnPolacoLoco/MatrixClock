@@ -34,7 +34,7 @@
 #include "Joystick.h"
 
 #pragma region Pong Structs
-struct
+struct ball
 {
 	//ball starts off mroe or less in the middle of the display.
 	int8_t x = 14;
@@ -44,7 +44,9 @@ struct
 	int8_t momentumX = -1;
 	int8_t momentumY = 1;
 
-} ball;
+	char color = 'W';
+
+};
 
 struct paddle
 {
@@ -130,11 +132,13 @@ private:
 
 	paddle paddle1;
 	paddle paddle2;
+	ball ball1;
+	ball ball2;
 
 	void movePaddle(paddle &paddle, int8_t direction);
-	void moveBall();
-	void resetBall();
-	bool didPaddleHitBall(paddle& paddle);
+	void moveBall(ball& ball);
+	void resetBall(ball& ball);
+	bool didPaddleHitBall(paddle& paddle, ball& ball);
 
 };
 

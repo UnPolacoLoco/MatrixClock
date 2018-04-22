@@ -31,11 +31,6 @@ public:
 	int16_t getAnalogX();
 	int16_t getAnalogY();
 
-	//Gets currentX and Y positions (stored in the private variables)
-	int8_t getCurrentX();
-	int8_t getCurrentY();
-
-
 	//gets relative movement of the joystick on both axis, returns 1, -1 or 0
 	int8_t getMovementX();
 	int8_t getMovementY();

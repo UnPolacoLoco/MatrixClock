@@ -30,6 +30,9 @@ void MatrixClock::initialize()
 	paddle2.startX = 23;
 	paddle2.color = 'B';
 
+	ball2.momentumX = 1;
+	ball2.color = 'G';
+
 	randomSeed(analogRead(A3));
 
 
@@ -421,9 +424,6 @@ const uint8_t MatrixClock::getMode()
 
 #pragma region Pong
 
-
-
-
 void MatrixClock::PlayPong()
 {
 	bool isPlaying = true;
@@ -443,9 +443,10 @@ void MatrixClock::PlayPong()
 		//game logic
 		movePaddle(paddle1, playerMovement);
 		movePaddle(paddle2, aiMovement);
-		moveBall();
-		didPaddleHitBall(paddle1);
-		didPaddleHitBall(paddle2);
+		moveBall(ball1);
+		moveBall(ball2);
+		didPaddleHitBall(paddle1,ball1); didPaddleHitBall(paddle1, ball2);
+		didPaddleHitBall(paddle2,ball1); didPaddleHitBall(paddle2, ball2);
 
 		//display to player
 		drawDisplayBuffer();
@@ -488,7 +489,7 @@ void MatrixClock::movePaddle(paddle& paddle, int8_t direction)
 	}
 }
 
-void MatrixClock::moveBall()
+void MatrixClock::moveBall(ball& ball)
 {
 
 	if (ball.x + ball.momentumX > 23 || ball.x + ball.momentumX < 0)
@@ -507,17 +508,16 @@ void MatrixClock::moveBall()
 
 	displayBuffer[ball.x][ball.y] = 'W';
 
-
 }
 
-void MatrixClock::resetBall()
+void MatrixClock::resetBall(ball& ball)
 {
 	ball.x = random(8, 15);
 	ball.y = random(0, 7);
 }
 
 
-bool MatrixClock::didPaddleHitBall(paddle& paddle)
+bool MatrixClock::didPaddleHitBall(paddle& paddle, ball& ball)
 {
 	//checks if the ball hits one of the parts of the passed in paddle paddle
 	if ((ball.y == paddle.paddleBlocks[0] && ball.x == paddle.startX - (ball.momentumX) ||
@@ -546,7 +546,7 @@ bool MatrixClock::didPaddleHitBall(paddle& paddle)
 	else if (ball.x == paddle.startX)
 	{
 		paddle.score++;
-		resetBall();
+		resetBall(ball);
 		delay(100);
 		return false;
 	}
