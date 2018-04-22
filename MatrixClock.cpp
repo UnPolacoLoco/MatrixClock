@@ -35,15 +35,7 @@ void MatrixClock::initialize()
 
 	randomSeed(analogRead(A3));
 
-
-	for (int i = 0; i < matrix.height(); i++)
-	{
-		for (int j = 0; j < matrix.width(); j++)
-		{
-			displayBuffer[i][j] = ' ';
-		}
-	}
-
+	clearDisplayBuffer();
 	
 }
 
@@ -506,7 +498,7 @@ void MatrixClock::moveBall(ball& ball)
 
 	ball.y += ball.momentumY;
 
-	displayBuffer[ball.x][ball.y] = 'W';
+	displayBuffer[ball.x][ball.y] = ball.color;
 
 }
 
