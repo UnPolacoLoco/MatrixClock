@@ -50,11 +50,6 @@ private:
 	int8_t analogPortY; //Analog port for Y-axis
 	int8_t joystickButtonPort; //Digital port for joystickButton
 
-	int8_t currentX = 0;
-	int8_t currentY = 0;
-
-
-
 };
 
 #endif

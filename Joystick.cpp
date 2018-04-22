@@ -26,16 +26,6 @@ int16_t Joystick::getAnalogY()
 	return analogRead(analogPortY);
 }
 
-int8_t Joystick::getCurrentX()
-{
-	return currentX;
-}
-
-int8_t Joystick::getCurrentY()
-{
-	return currentY;
-}
-
 
 int8_t Joystick::getMovementX()
 {

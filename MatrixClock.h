@@ -25,8 +25,6 @@
 #define NUM_OF_MODES 8
 
 
-
-
 #include <Adafruit_NeoMatrix.h>
 #include <Adafruit_NeoPixel.h>
 #include <Adafruit_GFX.h>
@@ -35,6 +33,7 @@
 #include <EEPROM.h>
 #include "Joystick.h"
 
+#pragma region Pong Structs
 struct
 {
 	//ball starts off mroe or less in the middle of the display.
@@ -56,6 +55,7 @@ struct paddle
 	int8_t paddleLenght = 2;
 
 };
+#pragma endregion
 
 class MatrixClock
 {
