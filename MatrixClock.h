@@ -22,7 +22,9 @@
 #define JOYSTICK_BTTN 13
 
 //increase when modes increase
-#define NUM_OF_MODES 8
+#define NUM_OF_MODES 6
+
+#define BUZZER 8
 
 
 #include <Adafruit_NeoMatrix.h>
@@ -32,6 +34,7 @@
 #include <DS3231.h>
 #include <EEPROM.h>
 #include "Joystick.h"
+#include "Buzzer.h"
 
 #pragma region Pong Structs
 struct ball
@@ -89,6 +92,9 @@ public:
 	//display buffer to facilitate calling drawPixel methods on each pixel from an array of chars.
 	void drawDisplayBuffer(); //TODO possibly a private function
 	void clearDisplayBuffer();
+
+	void testBuzzer();
+
 	
 
 	void PlayPong();
@@ -102,6 +108,7 @@ private:
 		NEO_GRB + NEO_KHZ800);
 	DS3231 rtc = DS3231(A4, A5);
 	Joystick joystick = Joystick(JOYSTICK_X, JOYSTICK_Y, JOYSTICK_BTTN);
+	Buzzer bzzr = Buzzer(8);
 	
 	//Address of the set flag in the EEPROM. See initialize()
 	const uint8_t setAddress = 0x02; 
@@ -114,7 +121,7 @@ private:
 	String temp;
 	String time;
 
-	uint8_t modeCounter = 0;
+	uint8_t modeCounter = 7;
 	uint8_t MAX_BRIGHTNESS = 25;
 
 	

@@ -256,6 +256,11 @@ void MatrixClock::clearDisplayBuffer()
 
 }
 
+void MatrixClock::testBuzzer()
+{
+	if (rtc.getTime().sec%2 == 0)
+	bzzr.alarm();
+}
 
 void MatrixClock::changeTextColor()
 {
