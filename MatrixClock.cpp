@@ -432,7 +432,6 @@ void MatrixClock::PlayPong()
 		clearDisplayBuffer();
 
 		//timing and input
-
 		int8_t playerMovement = joystick.getMovementY();
 		int8_t aiMovement = (random(0, 1023) > 512 ? -1 : 1);
 		delay(100);
@@ -440,10 +439,26 @@ void MatrixClock::PlayPong()
 		//game logic
 		movePaddle(paddle1, playerMovement);
 		movePaddle(paddle2, aiMovement);
+
 		moveBall(ball1);
 		moveBall(ball2);
-		didPaddleHitBall(paddle1,ball1); didPaddleHitBall(paddle1, ball2);
-		didPaddleHitBall(paddle2,ball1); didPaddleHitBall(paddle2, ball2);
+
+
+		//check whether the ball is getting closer to the paddle, if so enter the function.
+		if (ball1.x < 3 || ball1.x > 20)
+		{
+			didPaddleHitBall(paddle1, ball1);
+			didPaddleHitBall(paddle2, ball1);
+		}
+
+		if (ball2.x < 3 || ball2.x > 20)
+		{
+			didPaddleHitBall(paddle1, ball2);
+			didPaddleHitBall(paddle2, ball2);
+		}
+		
+
+
 
 		//display to player
 		drawDisplayBuffer();
@@ -473,6 +488,7 @@ void MatrixClock::movePaddle(paddle& paddle, int8_t direction)
 	//check whether the paddle is heading out of bounds
 	if (paddle.paddleBlocks[0] + direction < 0 || paddle.paddleBlocks[1] + direction > 7)
 	{
+	
 		displayBuffer[paddle.startX][paddle.paddleBlocks[0]] = paddle.color;
 		displayBuffer[paddle.startX][paddle.paddleBlocks[1]] = paddle.color;
 	}
@@ -489,14 +505,9 @@ void MatrixClock::movePaddle(paddle& paddle, int8_t direction)
 void MatrixClock::moveBall(ball& ball)
 {
 
-	if (ball.x + ball.momentumX > 23 || ball.x + ball.momentumX < 0)
-	{
-		ball.momentumX *= -1;
-		buzzer.buzz();
-	}
-
 	ball.x += ball.momentumX;
 
+	//bounce the ball off top and bottom edges of the screen.
 	if (ball.y + ball.momentumY > 7 || ball.y + ball.momentumY < 0)
 	{
 		ball.momentumY *= -1;

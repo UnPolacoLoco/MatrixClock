@@ -147,6 +147,7 @@ private:
 	void resetBall(ball& ball);
 	bool didPaddleHitBall(paddle& paddle, ball& ball);
 
+
 };
 
 
