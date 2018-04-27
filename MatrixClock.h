@@ -108,7 +108,7 @@ private:
 		NEO_GRB + NEO_KHZ800);
 	DS3231 rtc = DS3231(A4, A5);
 	Joystick joystick = Joystick(JOYSTICK_X, JOYSTICK_Y, JOYSTICK_BTTN);
-	Buzzer bzzr = Buzzer(8);
+	Buzzer buzzer = Buzzer(8);
 	
 	//Address of the set flag in the EEPROM. See initialize()
 	const uint8_t setAddress = 0x02; 

@@ -11,11 +11,11 @@ Buzzer::Buzzer(uint8_t _pin)
 
 void Buzzer::alarm()
 {
-	tone(pin, ALARM_FREQ, 250);
+	tone(pin, ALARM_FREQ, 500);
 }
 
-void Buzzer::buzz()
+void Buzzer::buzz(uint8_t freq)
 {
-	tone(pin, 50, 25);
+	tone(pin, freq, 25);
 }
 

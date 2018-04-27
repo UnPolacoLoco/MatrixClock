@@ -14,9 +14,9 @@ class Buzzer
 public:
 	Buzzer(uint8_t _pin);
 	void alarm();
-	void buzz();
+	void buzz(uint8_t freq = 50);
 private:
-	uint8_t ALARM_FREQ = 80;
+	uint8_t ALARM_FREQ = 70;
 	uint8_t pin = 0;
 };
 

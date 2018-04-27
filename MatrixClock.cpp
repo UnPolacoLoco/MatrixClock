@@ -259,7 +259,7 @@ void MatrixClock::clearDisplayBuffer()
 void MatrixClock::testBuzzer()
 {
 	if (rtc.getTime().sec%2 == 0)
-	bzzr.alarm();
+	buzzer.alarm();
 }
 
 void MatrixClock::changeTextColor()
@@ -492,6 +492,7 @@ void MatrixClock::moveBall(ball& ball)
 	if (ball.x + ball.momentumX > 23 || ball.x + ball.momentumX < 0)
 	{
 		ball.momentumX *= -1;
+		buzzer.buzz();
 	}
 
 	ball.x += ball.momentumX;
@@ -499,6 +500,7 @@ void MatrixClock::moveBall(ball& ball)
 	if (ball.y + ball.momentumY > 7 || ball.y + ball.momentumY < 0)
 	{
 		ball.momentumY *= -1;
+		buzzer.buzz();
 	}
 
 	ball.y += ball.momentumY;
@@ -521,28 +523,35 @@ bool MatrixClock::didPaddleHitBall(paddle& paddle, ball& ball)
 		(ball.y == paddle.paddleBlocks[1] && ball.x == paddle.startX - (ball.momentumX))))
 	{
 		ball.momentumX *= -1;
+		buzzer.buzz(35);
 		return true;
 	}
 
 	//check to see if the ball hits the passed in paddle diagonally from top right
-	else if ((ball.y == (paddle.paddleBlocks[0] - 1) && ball.x == paddle.startX - (ball.momentumX)))
+	else if ((ball.y == (paddle.paddleBlocks[0] - 1) && ball.x == paddle.startX - (ball.momentumX)
+		&& (ball.y != paddle.paddleBlocks[0] && ball.momentumY > 0)))
 	{
+	
 		ball.momentumX *= -1;
 		ball.momentumY *= -1;
+		buzzer.buzz(35);
 		return true;
 	}
 
 	//check to see if the ball hits the passed in paddle diagonally from bottom right
-	else if ((ball.y == (paddle.paddleBlocks[1] + 1) && ball.x == paddle.startX - (ball.momentumX)))
+	else if ((ball.y == (paddle.paddleBlocks[1] + 1) && ball.x == paddle.startX - (ball.momentumX) && 
+		(ball.y != paddle.paddleBlocks[1] && ball.momentumY < 0)))
 	{
 		ball.momentumX *= -1;
 		ball.momentumY *= -1;
+		buzzer.buzz(35);
 		return true;
 	}
 
 	else if (ball.x == paddle.startX)
 	{
 		paddle.score++;
+		buzzer.buzz(100);
 		resetBall(ball);
 		delay(100);
 		return false;
