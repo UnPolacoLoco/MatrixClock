@@ -21,7 +21,7 @@ void MatrixClock::initialize()
 	matrix.begin();
 	matrix.setTextWrap(false);
 	matrix.setBrightness(10);
-	matrix.setTextColor(matrix.Color(255, 0, 0));
+	matrix.setTextColor(MAGENTA);
 	matrix.setFont(&TomThumb);
 
 	paddle1.startX = 0;
@@ -122,12 +122,17 @@ void MatrixClock::showTime()
 		{
 			
 		case 0:
-			time = rtc.getTime().hour;;
+			time = rtc.getTime().hour;
 			time += " ";
 			if (rtc.getTime().min < 10)
 				time += "0";
 			
 			time += rtc.getTime().min;
+
+			if (rtc.getTime().min == 0)
+				buzzer.buzz(100, 75);
+
+			
 			showText(time);
 			break;
 			
@@ -147,7 +152,6 @@ void MatrixClock::showTemp()
 {
 	if (joystick.getMovementX() == 0)
 	{
-				
 		temp = (int)rtc.getTemp();
 		temp += "' C";
 		showText(temp);
@@ -166,9 +170,8 @@ void MatrixClock::showTimeAndDate()
 {
 	unsigned long currentTime = millis();
 	bool modeChanged = false;
-	bool alarmActivated = false;
 
-	while ((millis() - currentTime) < 25000 && !modeChanged && !alarmActivated) //show the time for 25000ms (25s)
+	while ((millis() - currentTime) < 25000 && !modeChanged) //show the time for 25000ms (25s)
 	{
 		showTime();
 		modeChanged = joystick.isPressed();
@@ -178,7 +181,7 @@ void MatrixClock::showTimeAndDate()
 	currentTime = millis();
 	x = matrix.width();
 
-	while ((millis() - currentTime) < 16000 && !modeChanged && !alarmActivated) //it takes ~16000ms (16s) to scroll the entire FullDate()
+	while ((millis() - currentTime) < 16000 && !modeChanged) //it takes ~16000ms (16s) to scroll the entire FullDate()
 	{
 		showFullDate();
 		modeChanged = joystick.isPressed();
@@ -191,9 +194,6 @@ void MatrixClock::showTimeAndDate()
 	}
 
 
-
-
-
 }
 
 #pragma endregion
@@ -201,9 +201,7 @@ void MatrixClock::showTimeAndDate()
 void MatrixClock::drawDisplayBuffer()
 {
 	matrix.clear();
-
 	
-
 	for (int x = 0; x < 24; x++)
 	{
 		for(int y = 0; y < 8; y++)
@@ -381,7 +379,7 @@ void MatrixClock::changeTextColor()
 		case 5:
 			delay(50);
 			matrix.setTextColor(CYAN);
-			showText("CYNN");
+			showText("CYAN");
 			break;
 
 		case 6:
@@ -394,7 +392,7 @@ void MatrixClock::changeTextColor()
 
 		}
 
-		if (digitalRead(JOYSTICK_BTTN) != 1)
+		if (joystick.isPressed())
 		{
 			delay(100);
 			isEditing = false;
@@ -480,9 +478,6 @@ void MatrixClock::PlayPong()
 			didPaddleHitBall(paddle2, ball2);
 		}
 		
-
-
-
 		//display to player
 		drawDisplayBuffer();
 

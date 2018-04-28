@@ -22,10 +22,16 @@
 #define JOYSTICK_BTTN 13
 
 //increase when modes increase
-#define NUM_OF_MODES 6
+#define NUM_OF_MODES 5
 
+//Buzzer pin
 #define BUZZER 8
 
+//Sound module pin
+#define SOUND_MODULE A0
+
+//debug mode
+//#define DEBUG
 
 #include <Adafruit_NeoMatrix.h>
 #include <Adafruit_NeoPixel.h>
@@ -35,33 +41,6 @@
 #include <EEPROM.h>
 #include "Joystick.h"
 #include "Buzzer.h"
-
-#pragma region Pong Structs
-struct ball
-{
-	//ball starts off mroe or less in the middle of the display.
-	int8_t x = 14;
-	int8_t y = 4;
-
-	//ball starts off going away from the paddle.
-	int8_t momentumX = -1;
-	int8_t momentumY = 1;
-
-	char color = 'W';
-
-};
-
-struct paddle
-{
-	int8_t paddleBlocks[2] = { 2,3 };
-	int8_t startX;
-	char color;
-	uint8_t score = 0;
-	int8_t paddleLenght = 2;
-
-};
-#pragma endregion
-
 
 
 class MatrixClock
@@ -91,9 +70,7 @@ public:
 	void changeMode();
 	const uint8_t getMode();
 
-	//display buffer to facilitate calling drawPixel methods on each pixel from an array of chars.
-	void drawDisplayBuffer(); //TODO possibly a private function
-	void clearDisplayBuffer();
+
 
 	//
 	//void setAlarm();
@@ -124,7 +101,7 @@ private:
 	String temp;
 	String time;
 
-	uint8_t modeCounter = 7;
+	uint8_t modeCounter = 0;
 	uint8_t MAX_BRIGHTNESS = 25;
 
 	
@@ -138,7 +115,36 @@ private:
 	const uint16_t WHITE = matrix.Color(255, 255, 255);
 	const uint16_t BLACK = matrix.Color(0, 0, 0);
 
+	//display buffer to facilitate calling drawPixel methods on each pixel from an array of chars.
 	char displayBuffer[24][8];
+	void drawDisplayBuffer(); 
+	void clearDisplayBuffer();
+
+#pragma region Pong
+
+	struct ball
+	{
+		//ball starts off mroe or less in the middle of the display.
+		int8_t x = 14;
+		int8_t y = 4;
+
+		//ball starts off going away from the paddle.
+		int8_t momentumX = -1;
+		int8_t momentumY = 1;
+
+		char color = 'W';
+
+	};
+
+	struct paddle
+	{
+		int8_t paddleBlocks[2] = { 2,3 };
+		int8_t startX;
+		char color;
+		uint8_t score = 0;
+		int8_t paddleLenght = 2;
+
+	};
 
 	paddle paddle1;
 	paddle paddle2;
@@ -149,16 +155,7 @@ private:
 	void moveBall(ball& ball);
 	void resetBall(ball& ball);
 	bool didPaddleHitBall(paddle& paddle, ball& ball);
-
-	struct
-	{
-		uint8_t hour = 0;
-		uint8_t minute = 0;
-		bool isActivated = false;
-
-	}alarm;
-
-
+#pragma endregion
 };
 
 

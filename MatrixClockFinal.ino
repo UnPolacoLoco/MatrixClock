@@ -3,6 +3,8 @@
 #include "MatrixClock.h"
 #include <Arduino.h>
 
+
+
 MatrixClock clock;
 
 void setup() 
@@ -14,7 +16,11 @@ void setup()
 	pinMode(JOYSTICK_BTTN, INPUT_PULLUP); //Joystick button, active low. 
 	pinMode(BUZZER, OUTPUT);
 
+#ifdef DEBUG
 	Serial.begin(115200);
+#endif // DEBUG
+
+	
 }
 
 
@@ -29,37 +35,37 @@ void loop()
 	{
 
 	case 0:
+#ifdef DEBUG
 		Serial.println("In mode 0, Time and Date");
+#endif // DEBUG
 		clock.showTimeAndDate();
 		break;
 
-	/*case 1:
-		Serial.println("In mode 1, Just Time");
-		clock.showTime();
-		break;*/
-
-	//case 2:
-	//	Serial.println("In mode 2, Just Date");
-	//	clock.showDate();
-	//	break;
-
 	case 1:
-
-		Serial.println("in mode 2, Temperature");
+#ifdef DEBUG
+		Serial.println("in mode 1, Temperature");
+#endif // DEBUG
 		clock.showTemp();
 		break;
 
 	case 2:
-		Serial.println("in mode 3: change color");
+#ifdef DEBUG
+		Serial.println("in mode 2: change color");
+#endif // DEBUG
 		clock.changeTextColor();
 		break;
+
 	case 3:
-		Serial.println("in mode 4: change brightness");
+#ifdef DEBUG
+		Serial.println("in mode 3: change brightness");
+#endif // DEBUG
 		clock.changeBrightess();
 		break;
 
 	case 4:
-		Serial.println("in mode 5: Pong?");
+#ifdef DEBUG
+		Serial.println("in mode 4: PONG");
+#endif // DEBUG
 		clock.PlayPong();
 		break;
 
