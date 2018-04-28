@@ -69,6 +69,12 @@ void loop()
 		clock.PlayPong();
 		break;
 
+	case 5:
+#ifdef DEBUG
+		Serial.println("in mode 5: changeTime");
+#endif // DEBUG
+		clock.changeTime();
+
 	default:
 		clock.showText("ERROR");
 		break;

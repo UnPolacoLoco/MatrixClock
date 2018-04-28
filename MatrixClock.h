@@ -22,7 +22,7 @@
 #define JOYSTICK_BTTN 13
 
 //increase when modes increase
-#define NUM_OF_MODES 5
+#define NUM_OF_MODES 6
 
 //Buzzer pin
 #define BUZZER 8
@@ -65,10 +65,13 @@ public:
 	//Text and Pixel appearance manupulation
 	void changeTextColor();
 	void changeBrightess();
+
+	void changeTime();
 	
 	//manipulate mode selection. Logic(e.g: change mode when button is pressed) has to be applied in main()
 	void changeMode();
 	const uint8_t getMode();
+
 
 
 

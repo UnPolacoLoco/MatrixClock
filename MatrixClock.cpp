@@ -438,6 +438,64 @@ void MatrixClock::changeBrightess()
 	}
 }
 
+void MatrixClock::changeTime()
+{
+	uint8_t hourBuffer = 0;
+	uint8_t minuteBuffer = 0;
+	String textToDisplay = "";
+
+	bool isChoosing = true;
+	bool isEditing = true;
+
+	while (isChoosing)
+	{
+		scrollText("Change time. Sure? UP - YES, DOWN - NO");
+		switch (joystick.getMovementY())
+		{
+		case -1:
+			isChoosing = false;
+			while (isEditing)
+			{
+				textToDisplay = " ";
+				minuteBuffer = (minuteBuffer + joystick.getMovementX()) % 60;
+				delay(50);
+				hourBuffer = (hourBuffer - joystick.getMovementY()) % 24;
+				delay(50);
+
+				textToDisplay += hourBuffer;
+				textToDisplay += ":";
+				textToDisplay += minuteBuffer;
+
+				showText(textToDisplay);
+
+				delay(50);
+
+
+
+				if (joystick.isPressed())
+				{
+					isEditing = false;
+					rtc.setTime(hourBuffer, minuteBuffer, 0);
+					modeCounter++;
+					delay(200);
+				}
+			}
+			break;
+		case 1:
+			showText("abort");
+			delay(500);
+			isChoosing = false;
+			modeCounter++;
+			break;
+
+		case 0:
+			break;
+		}
+
+	}
+	
+}
+
 
 void MatrixClock::changeMode()
 {
