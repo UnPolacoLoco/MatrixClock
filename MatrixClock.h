@@ -104,6 +104,8 @@ private:
 	uint8_t modeCounter = 0;
 	uint8_t MAX_BRIGHTNESS = 25;
 
+	bool buzzedAtFullHour = false;
+
 	
 	//list of typical colors to use;
 	const uint16_t RED = matrix.Color(255, 0, 0);

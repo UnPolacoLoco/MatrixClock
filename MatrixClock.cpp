@@ -21,7 +21,7 @@ void MatrixClock::initialize()
 	matrix.begin();
 	matrix.setTextWrap(false);
 	matrix.setBrightness(10);
-	matrix.setTextColor(MAGENTA);
+	matrix.setTextColor(BLUE);
 	matrix.setFont(&TomThumb);
 
 	paddle1.startX = 0;
@@ -113,11 +113,13 @@ void MatrixClock::showFullDate()
 		}
 	}
 		
-	scrollText(date);
+	scrollText(date, 85);
 }
 
 void MatrixClock::showTime()
 {
+
+
 	switch (rtc.getTime().sec % 2)
 		{
 			
@@ -129,8 +131,17 @@ void MatrixClock::showTime()
 			
 			time += rtc.getTime().min;
 
-			if (rtc.getTime().min == 0)
-				buzzer.buzz(100, 75);
+			if (time.endsWith("00") && !buzzedAtFullHour)
+			{
+				buzzer.buzz(80, 50);
+				buzzedAtFullHour == true;
+			}
+
+			else if (time.endsWith("01") && buzzedAtFullHour)
+			{
+				buzzer.buzz(80, 50);
+				buzzedAtFullHour == false;
+			}
 
 			
 			showText(time);
@@ -181,7 +192,7 @@ void MatrixClock::showTimeAndDate()
 	currentTime = millis();
 	x = matrix.width();
 
-	while ((millis() - currentTime) < 16000 && !modeChanged) //it takes ~16000ms (16s) to scroll the entire FullDate()
+	while ((millis() - currentTime) < 10000 && !modeChanged) //it takes ~10000ms (10s) to scroll the entire FullDate()
 	{
 		showFullDate();
 		modeChanged = joystick.isPressed();
