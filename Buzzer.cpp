@@ -11,7 +11,7 @@ Buzzer::Buzzer(uint8_t _pin)
 
 void Buzzer::alarm()
 {
-	tone(pin, ALARM_FREQ, 500);
+	tone(pin, ALARM_FREQ, 333);
 }
 
 void Buzzer::buzz(uint8_t freq)

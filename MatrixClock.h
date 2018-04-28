@@ -62,6 +62,8 @@ struct paddle
 };
 #pragma endregion
 
+
+
 class MatrixClock
 {
 
@@ -78,8 +80,8 @@ public:
 	void showTemp();
 	
 	//Showing text on the matrices
-	void scrollText(String textToScroll, int howFastToScroll = 150);
-	void showText(String textToShow);
+	void scrollText(const String &textToScroll, int howFastToScroll = 150);
+	void showText(const String &textToShow);
 
 	//Text and Pixel appearance manupulation
 	void changeTextColor();
@@ -93,9 +95,10 @@ public:
 	void drawDisplayBuffer(); //TODO possibly a private function
 	void clearDisplayBuffer();
 
-	void testBuzzer();
-
-	
+	//
+	//void setAlarm();
+	//void activateAlarm();
+	//bool isAlarmTime();
 
 	void PlayPong();
 
@@ -146,6 +149,14 @@ private:
 	void moveBall(ball& ball);
 	void resetBall(ball& ball);
 	bool didPaddleHitBall(paddle& paddle, ball& ball);
+
+	struct
+	{
+		uint8_t hour = 0;
+		uint8_t minute = 0;
+		bool isActivated = false;
+
+	}alarm;
 
 
 };

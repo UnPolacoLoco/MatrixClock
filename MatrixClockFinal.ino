@@ -24,8 +24,7 @@ void loop()
 	{
 		clock.changeMode();
 	}
-
-
+	
 	switch (clock.getMode())
 	{
 
@@ -66,7 +65,6 @@ void loop()
 
 	default:
 		clock.showText("ERROR");
-		clock.testBuzzer();
 		break;
 	}
 

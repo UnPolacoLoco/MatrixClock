@@ -35,13 +35,14 @@ void MatrixClock::initialize()
 
 	randomSeed(analogRead(A3));
 
+
 	clearDisplayBuffer();
 	
 }
 
 #pragma region Displaying Text
 
-void MatrixClock::scrollText(String textToScroll, int scrollSpeed = 150)
+void MatrixClock::scrollText(const String& textToScroll, int scrollSpeed = 150)
 {
 	int lenght = textToScroll.length();
 
@@ -49,7 +50,7 @@ void MatrixClock::scrollText(String textToScroll, int scrollSpeed = 150)
 	matrix.setCursor(x, 7);
 	matrix.print(textToScroll);
 
-	if (--x < -lenght * 5) //the magic number (5) controls how many columns the text will scroll for. The longer the text, the more columns scrolled
+	if (--x < -lenght * 5) //the number (5) controls how many columns the text will scroll for. The longer the text, the more columns scrolled
 	{
 		x = matrix.width();
 	}
@@ -58,7 +59,7 @@ void MatrixClock::scrollText(String textToScroll, int scrollSpeed = 150)
 	delay(scrollSpeed);
 }
 
-void MatrixClock::showText(String textToShow)
+void MatrixClock::showText(const String& textToShow)
 {
 
 	int Cursor = matrix.width() / (textToShow.length() + 1);
@@ -165,26 +166,33 @@ void MatrixClock::showTimeAndDate()
 {
 	unsigned long currentTime = millis();
 	bool modeChanged = false;
+	bool alarmActivated = false;
 
-	while ((millis() - currentTime) < 25000 && !modeChanged) //show the time for 25000ms (25s)
+	while ((millis() - currentTime) < 25000 && !modeChanged && !alarmActivated) //show the time for 25000ms (25s)
 	{
 		showTime();
 		modeChanged = joystick.isPressed();
+	
 	}
 
 	currentTime = millis();
 	x = matrix.width();
 
-	while ((millis() - currentTime) < 16000 && !modeChanged) //it takes ~16000ms (16s) to scroll the entire FullDate()
+	while ((millis() - currentTime) < 16000 && !modeChanged && !alarmActivated) //it takes ~16000ms (16s) to scroll the entire FullDate()
 	{
 		showFullDate();
 		modeChanged = joystick.isPressed();
+	
 	}
 
 	if (modeChanged)
 	{
 		changeMode();
 	}
+
+
+
+
 
 }
 
@@ -256,11 +264,80 @@ void MatrixClock::clearDisplayBuffer()
 
 }
 
-void MatrixClock::testBuzzer()
-{
-	if (rtc.getTime().sec%2 == 0)
-	buzzer.alarm();
-}
+//void MatrixClock::activateAlarm()
+//{
+//	
+//	bool isAlarmOn = true;
+//
+//	while (isAlarmOn)
+//	{
+//		
+//		if (rtc.getTime().sec % 2 == 0)
+//		{
+//			showText("alarm");
+//			buzzer.alarm();
+//		}
+//
+//		else
+//			showText(" ");
+//
+//		if (joystick.isPressed())
+//		{
+//			delay(300);
+//			isAlarmOn = false;
+//			alarm.isActivated = false;
+//			
+//		}
+//
+//	}
+//}
+//
+//bool MatrixClock::isAlarmTime()
+//{
+//	if (rtc.getTime().hour == alarm.hour && rtc.getTime().min == alarm.minute && alarm.isActivated == true)
+//		return true;
+//	else
+//		return false;
+//}
+//
+//void MatrixClock::setAlarm()
+//{
+//	//TODO change to a proper alarm set function
+//	uint8_t hourBuffer = rtc.getTime().hour;
+//	uint8_t minuteBuffer = rtc.getTime().min;
+//	String text = "";
+//	bool isEditing = true;
+//	delay(50);
+//
+//	while (isEditing)
+//	{
+//		hourBuffer = (hourBuffer - joystick.getMovementY()) % 24;
+//		minuteBuffer = (minuteBuffer + joystick.getMovementX()) % 60;
+//
+//		text = hourBuffer;
+//		text += ":";
+//		text += minuteBuffer;
+//		showText(text);
+//		delay(100);
+//
+//		if (joystick.isPressed())
+//		{
+//			isEditing = false;
+//			alarm.isActivated = true;
+//			modeCounter++;
+//			alarm.hour = hourBuffer;
+//			alarm.minute = minuteBuffer;
+//
+//			Serial.print(hourBuffer);
+//			Serial.print(":");
+//			Serial.println(minuteBuffer);
+//		
+//		}
+//
+//	}
+//
+//	
+//}
 
 void MatrixClock::changeTextColor()
 {
@@ -312,58 +389,6 @@ void MatrixClock::changeTextColor()
 			matrix.setTextColor(MAGENTA);
 			showText("MGT");
 			break;
-
-			/*while (!joystick.IsPressed())
-			{
-				scrollText("Use up and down on joystick. Press the button when ready", 100);
-			}
-
-			
-
-			switch (letter % 3)
-			{
-
-			case 0: //editing RED
-				Serial.println("editing RED");
-
-				_RED += joystick.GetMovementY() * -25;
-				Serial.println(_RED);
-				newColor = matrix.Color(_RED, _GREEN, _BLUE);
-				matrix.setTextColor(newColor);
-				showText("RED");
-				delay(50);
-				break;
-
-			case 1: //editing GREEN
-				Serial.println("editing GREEN");
-
-				_GREEN += joystick.GetMovementY() * -25;
-				Serial.println(_GREEN);
-				newColor = matrix.Color(_RED, _GREEN, _BLUE);
-
-				matrix.setTextColor(newColor);
-				showText("GREEN");
-				delay(50);
-				break;
-
-			case 2: //editing BLUE
-				Serial.println("editing BLUE");
-
-				_BLUE += joystick.GetMovementY() * -25;
-				Serial.println(_BLUE);
-				newColor = matrix.Color(_RED, _GREEN, _BLUE);
-				matrix.setTextColor(newColor);
-				showText("BLUE");
-				delay(50);
-				break;
-
-
-			default:
-				break;
-			}
-
-			*/
-
 		default:
 			break;
 
@@ -415,8 +440,6 @@ const uint8_t MatrixClock::getMode()
 {
 	return modeCounter % NUM_OF_MODES;
 }
-
-
 
 
 #pragma region Pong
