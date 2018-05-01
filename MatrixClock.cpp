@@ -199,6 +199,18 @@ void MatrixClock::showTimeAndDate()
 	
 	}
 
+	if (rtc.getTime().date == 1)
+	{
+		currentTime = millis();
+		x = matrix.width();
+
+		while ((millis() - currentTime) < 8500 && !modeChanged) //it takes ~8000ms (8s) to scroll the entire FullDate()
+		{
+			scrollText("Happy monthiversary!", 80);
+			modeChanged = joystick.isPressed();
+
+		}
+	}
 
 	if (modeChanged)
 	{
@@ -274,80 +286,6 @@ void MatrixClock::clearDisplayBuffer()
 
 }
 
-//void MatrixClock::activateAlarm()
-//{
-//	
-//	bool isAlarmOn = true;
-//
-//	while (isAlarmOn)
-//	{
-//		
-//		if (rtc.getTime().sec % 2 == 0)
-//		{
-//			showText("alarm");
-//			buzzer.alarm();
-//		}
-//
-//		else
-//			showText(" ");
-//
-//		if (joystick.isPressed())
-//		{
-//			delay(300);
-//			isAlarmOn = false;
-//			alarm.isActivated = false;
-//			
-//		}
-//
-//	}
-//}
-//
-//bool MatrixClock::isAlarmTime()
-//{
-//	if (rtc.getTime().hour == alarm.hour && rtc.getTime().min == alarm.minute && alarm.isActivated == true)
-//		return true;
-//	else
-//		return false;
-//}
-//
-//void MatrixClock::setAlarm()
-//{
-//	//TODO change to a proper alarm set function
-//	uint8_t hourBuffer = rtc.getTime().hour;
-//	uint8_t minuteBuffer = rtc.getTime().min;
-//	String text = "";
-//	bool isEditing = true;
-//	delay(50);
-//
-//	while (isEditing)
-//	{
-//		hourBuffer = (hourBuffer - joystick.getMovementY()) % 24;
-//		minuteBuffer = (minuteBuffer + joystick.getMovementX()) % 60;
-//
-//		text = hourBuffer;
-//		text += ":";
-//		text += minuteBuffer;
-//		showText(text);
-//		delay(100);
-//
-//		if (joystick.isPressed())
-//		{
-//			isEditing = false;
-//			alarm.isActivated = true;
-//			modeCounter++;
-//			alarm.hour = hourBuffer;
-//			alarm.minute = minuteBuffer;
-//
-//			Serial.print(hourBuffer);
-//			Serial.print(":");
-//			Serial.println(minuteBuffer);
-//		
-//		}
-//
-//	}
-//
-//	
-//}
 
 void MatrixClock::changeTextColor()
 {

@@ -72,11 +72,6 @@ public:
 	void changeMode();
 	const uint8_t getMode();
 
-
-	//void setAlarm();
-	//void activateAlarm();
-	//bool isAlarmTime();
-
 	void PlayPong();
 
 private:
