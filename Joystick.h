@@ -24,6 +24,7 @@ class Joystick
 {
 
 public:
+	Joystick();
 	Joystick(int8_t analogX, int8_t analogY);
 	Joystick(int8_t analogX, int8_t analogY, int8_t joystickButton);
 
@@ -38,6 +39,8 @@ public:
 	//reads digital port and returns true if button is pressed at the time of polling.
 	bool isPressed();
 	
+	void assignPins(int8_t analogX, int8_t analogY, int8_t joystickButton);
+
 
 
 private:

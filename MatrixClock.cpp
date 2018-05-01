@@ -9,6 +9,7 @@ void MatrixClock::initialize()
 {
 	rtc.begin();
 
+
 	if (EEPROM.read(setAddress) != 1)
 	{
 		rtc.setDOW(THURSDAY);     // Set Day-of-Week to Thursday
@@ -124,7 +125,7 @@ void MatrixClock::showTime()
 		{
 			
 		case 0:
-			time = rtc.getTime().hour;
+			time = (String)rtc.getTime().hour;
 			time += " ";
 			if (rtc.getTime().min < 10)
 				time += "0";
@@ -133,14 +134,13 @@ void MatrixClock::showTime()
 
 			if (time.endsWith("00") && !buzzedAtFullHour)
 			{
-				buzzer.buzz(80, 50);
-				buzzedAtFullHour == true;
+				buzzer.buzz(80, 150);
+				buzzedAtFullHour = true;
 			}
 
 			else if (time.endsWith("01") && buzzedAtFullHour)
 			{
-				buzzer.buzz(80, 50);
-				buzzedAtFullHour == false;
+				buzzedAtFullHour = false;
 			}
 
 			
@@ -148,7 +148,7 @@ void MatrixClock::showTime()
 			break;
 			
 		case 1:
-			time = rtc.getTime().hour;
+			time = (String)rtc.getTime().hour;
 			time += ":";
 			if (rtc.getTime().min < 10)
 				time += "0";
@@ -163,14 +163,14 @@ void MatrixClock::showTemp()
 {
 	if (joystick.getMovementX() == 0)
 	{
-		temp = (int)rtc.getTemp();
+		temp = (String)((int)rtc.getTemp());
 		temp += "' C";
 		showText(temp);
 	}
 
 	else
 	{
-		temp = (int)(rtc.getTemp() * 1.8 + 32);
+		temp = (String)((int)(rtc.getTemp() * 1.8 + 32));
 		temp += "' F";
 		showText(temp);
 	}
@@ -192,12 +192,18 @@ void MatrixClock::showTimeAndDate()
 	currentTime = millis();
 	x = matrix.width();
 
-	while ((millis() - currentTime) < 10000 && !modeChanged) //it takes ~10000ms (10s) to scroll the entire FullDate()
+	while ((millis() - currentTime) < 9000 && !modeChanged) //it takes ~9000ms (9s) to scroll the entire FullDate()
 	{
 		showFullDate();
 		modeChanged = joystick.isPressed();
 	
 	}
+
+	if (isTodaySpecialDay(rtc.getTime().date, rtc.getTime().mon))
+	{
+
+	}
+
 
 	if (modeChanged)
 	{
@@ -363,24 +369,28 @@ void MatrixClock::changeTextColor()
 		{
 		case 0:
 			delay(50);
-			matrix.setTextColor(RED);
-			showText("RED");
+			matrix.setTextColor(BLUE);
+			showText("BLU");
 			break;
+
 		case 1:
 			delay(50);
 			matrix.setTextColor(GREEN);
 			showText("GRN");
 			break;
+
 		case 2:
 			delay(50);
-			matrix.setTextColor(BLUE);
-			showText("BLU");
+			matrix.setTextColor(RED);
+			showText("RED");
 			break;
+
 		case 3:
 			delay(50);
 			matrix.setTextColor(WHITE);
 			showText("WHT");
 			break;
+
 		case 4:
 			delay(50);
 			matrix.setTextColor(YELLOW);
@@ -449,7 +459,7 @@ void MatrixClock::changeTime()
 
 	while (isChoosing)
 	{
-		scrollText("Change time. Sure? UP - YES, DOWN - NO");
+		scrollText("Change time. Sure? UP - YES, DOWN - NO", 80);
 		switch (joystick.getMovementY())
 		{
 		case -1:
@@ -457,10 +467,13 @@ void MatrixClock::changeTime()
 			while (isEditing)
 			{
 				textToDisplay = " ";
-				minuteBuffer = (minuteBuffer + joystick.getMovementX()) % 60;
-				delay(50);
-				hourBuffer = (hourBuffer - joystick.getMovementY()) % 24;
-				delay(50);
+				minuteBuffer = (minuteBuffer + joystick.getMovementX());
+				delay(25);
+				hourBuffer = (hourBuffer - joystick.getMovementY()) ;
+				delay(25);
+
+				hourBuffer = constrain(hourBuffer, 0, 23);
+				minuteBuffer = constrain(minuteBuffer, 0, 59);
 
 				textToDisplay += hourBuffer;
 				textToDisplay += ":";
@@ -468,9 +481,7 @@ void MatrixClock::changeTime()
 
 				showText(textToDisplay);
 
-				delay(50);
-
-
+				delay(25);
 
 				if (joystick.isPressed())
 				{
@@ -519,6 +530,7 @@ void MatrixClock::PlayPong()
 
 	while (isPlaying)
 	{
+		//clear back buffer
 		clearDisplayBuffer();
 
 		//timing and input
@@ -547,7 +559,7 @@ void MatrixClock::PlayPong()
 			didPaddleHitBall(paddle2, ball2);
 		}
 		
-		//display to player
+		//display to player, flush back buffer
 		drawDisplayBuffer();
 
 	
@@ -569,6 +581,25 @@ void MatrixClock::PlayPong()
 		}
 	}
 }
+
+String MatrixClock::getSpecialDayMessage(SpecialDays& specialDay)
+{
+	return specialDay.getMessage();
+}
+
+bool MatrixClock::isTodaySpecialDay(uint8_t day, uint8_t month)
+{
+	for (int i = 0; i < 2; i++)
+	{
+		if (specialDaysArray[i].getDay() == day && specialDaysArray[i].getMonth() == month)
+		{
+			return true;
+		}
+
+	}
+	return false;
+}
+		
 
 void MatrixClock::movePaddle(paddle& paddle, int8_t direction)
 {

@@ -4,7 +4,12 @@
 
 #include "Joystick.h"
 
-Joystick::Joystick(int8_t analogX, int8_t analogY) 
+Joystick::Joystick()
+{
+	//default ctor, remember to use assignsPins() to get the joystick up and running
+}
+
+Joystick::Joystick(int8_t analogX, int8_t analogY)
 	: analogPortX(analogX), analogPortY(analogY)
 {
 	//constructor for joystick without a dedicated button
@@ -50,4 +55,11 @@ int8_t Joystick::getMovementY()
 bool Joystick::isPressed()
 {
 	return (digitalRead(joystickButtonPort) == 1 ? false : true);
+}
+
+void Joystick::assignPins(int8_t analogX, int8_t analogY, int8_t joystickButton)
+{
+	analogPortX = analogX;
+	analogPortY = analogY;
+	joystickButtonPort = joystickButton;
 }
