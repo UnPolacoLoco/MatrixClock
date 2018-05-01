@@ -199,11 +199,6 @@ void MatrixClock::showTimeAndDate()
 	
 	}
 
-	if (isTodaySpecialDay(rtc.getTime().date, rtc.getTime().mon))
-	{
-
-	}
-
 
 	if (modeChanged)
 	{
@@ -582,24 +577,6 @@ void MatrixClock::PlayPong()
 	}
 }
 
-String MatrixClock::getSpecialDayMessage(SpecialDays& specialDay)
-{
-	return specialDay.getMessage();
-}
-
-bool MatrixClock::isTodaySpecialDay(uint8_t day, uint8_t month)
-{
-	for (int i = 0; i < 2; i++)
-	{
-		if (specialDaysArray[i].getDay() == day && specialDaysArray[i].getMonth() == month)
-		{
-			return true;
-		}
-
-	}
-	return false;
-}
-		
 
 void MatrixClock::movePaddle(paddle& paddle, int8_t direction)
 {

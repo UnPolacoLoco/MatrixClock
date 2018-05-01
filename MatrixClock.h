@@ -41,7 +41,6 @@
 #include <EEPROM.h>
 #include "Joystick.h"
 #include "Buzzer.h"
-#include "SpecialDays.h"
 
 
 class MatrixClock
@@ -90,14 +89,7 @@ private:
 	DS3231 rtc = DS3231(A4, A5);
 	Joystick joystick = Joystick(JOYSTICK_X, JOYSTICK_Y, JOYSTICK_BTTN);
 	Buzzer buzzer = Buzzer(8);
-	
-	SpecialDays monthiversary = SpecialDays(1, 5, 2011, "Happy Monthiversary!");
-	SpecialDays birthdayJanika = SpecialDays(13, 2, 1988, "Happy birthday, Janika!");
 
-	SpecialDays specialDaysArray[2] = { monthiversary, birthdayJanika };
-
-	String getSpecialDayMessage(SpecialDays& specialDay);
-	bool isTodaySpecialDay(uint8_t day, uint8_t month);
 	
 	//Address of the set flag in the EEPROM. See initialize()
 	const uint8_t setAddress = 0x02; 
