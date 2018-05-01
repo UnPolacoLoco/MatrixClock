@@ -36,45 +36,28 @@ void loop()
 	{
 
 	case 0:
-#ifdef DEBUG
-		Serial.println("In mode 0, Time and Date");
-#endif // DEBUG
 		clock.showTimeAndDate();
 		break;
 
 	case 1:
-#ifdef DEBUG
-		Serial.println("in mode 1, Temperature");
-#endif // DEBUG
 		clock.showTemp();
 		break;
 
 	case 2:
-#ifdef DEBUG
-		Serial.println("in mode 2: change color");
-#endif // DEBUG
 		clock.changeTextColor();
 		break;
 
 	case 3:
-#ifdef DEBUG
-		Serial.println("in mode 3: change brightness");
-#endif // DEBUG
 		clock.changeBrightess();
 		break;
 
 	case 4:
-#ifdef DEBUG
-		Serial.println("in mode 4: PONG");
-#endif // DEBUG
 		clock.PlayPong();
 		break;
 
 	case 5:
-#ifdef DEBUG
-		Serial.println("in mode 5: changeTime");
-#endif // DEBUG
 		clock.changeTime();
+		break;
 
 	default:
 		clock.showText("ERROR");

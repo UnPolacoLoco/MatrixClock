@@ -30,9 +30,6 @@
 //Sound module pin
 #define SOUND_MODULE A0
 
-//debug mode
-//#define DEBUG
-
 #include <Adafruit_NeoMatrix.h>
 #include <Adafruit_NeoPixel.h>
 #include <Adafruit_GFX.h>
@@ -92,10 +89,6 @@ private:
 	//needed to scroll text on matrix
 	int x = matrix.width(); 
 
-	//Strings to build an manipulate RTC module responses
-	String date;
-	String temp;
-	String time;
 
 	uint8_t modeCounter = 0;
 	uint8_t MAX_BRIGHTNESS = 25;

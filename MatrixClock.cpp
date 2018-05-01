@@ -63,9 +63,9 @@ void MatrixClock::scrollText(const String& textToScroll, int scrollSpeed = 150)
 void MatrixClock::showText(const String& textToShow)
 {
 
-	int Cursor = matrix.width() / (textToShow.length() + 1);
+	int cursor = matrix.width() / (textToShow.length() + 1);
 	matrix.fillScreen(0);
-	matrix.setCursor(Cursor, 7);
+	matrix.setCursor(cursor, 7);
 	matrix.print(textToShow);
 	matrix.show();
 	delay(50);
@@ -77,14 +77,13 @@ void MatrixClock::showText(const String& textToShow)
 
 void MatrixClock::showDate()
 {
-	date = rtc.getDateStr();
-	
+	String date = rtc.getDateStr();
 	scrollText(date);
 }
 
 void MatrixClock::showFullDate()
 {
-	date = rtc.getDOWStr();
+	String date = rtc.getDOWStr();
 	date += ", ";
 	date += rtc.getMonthStr();
 	date += " ";
@@ -120,6 +119,7 @@ void MatrixClock::showFullDate()
 void MatrixClock::showTime()
 {
 
+	String time = "";
 
 	switch (rtc.getTime().sec % 2)
 		{
@@ -161,6 +161,8 @@ void MatrixClock::showTime()
 
 void MatrixClock::showTemp()
 {
+	String temp = "";
+
 	if (joystick.getMovementX() == 0)
 	{
 		temp = (String)((int)rtc.getTemp());
@@ -199,24 +201,10 @@ void MatrixClock::showTimeAndDate()
 	
 	}
 
-	if (rtc.getTime().date == 1)
-	{
-		currentTime = millis();
-		x = matrix.width();
-
-		while ((millis() - currentTime) < 8500 && !modeChanged) //it takes ~8000ms (8s) to scroll the entire FullDate()
-		{
-			scrollText("Happy monthiversary!", 80);
-			modeChanged = joystick.isPressed();
-
-		}
-	}
-
 	if (modeChanged)
 	{
 		changeMode();
 	}
-
 
 }
 
