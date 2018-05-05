@@ -184,7 +184,7 @@ void MatrixClock::showTimeAndDate()
 	unsigned long currentTime = millis();
 	bool modeChanged = false;
 
-	while ((millis() - currentTime) < 25000 && !modeChanged) //show the time for 25000ms (25s)
+	while ((millis() - currentTime) < 45000 && !modeChanged) //show the time for 45000ms (45s)
 	{
 		showTime();
 		modeChanged = joystick.isPressed();
@@ -194,7 +194,7 @@ void MatrixClock::showTimeAndDate()
 	currentTime = millis();
 	x = matrix.width();
 
-	while ((millis() - currentTime) < 9000 && !modeChanged) //it takes ~9000ms (9s) to scroll the entire FullDate()
+	while ((millis() - currentTime) < 10000 && !modeChanged) //it takes ~10000ms (10s) to scroll the entire FullDate()
 	{
 		showFullDate();
 		modeChanged = joystick.isPressed();
